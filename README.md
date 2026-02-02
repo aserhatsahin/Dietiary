@@ -1,133 +1,218 @@
-# Dietary - Dietitian-Client Management Platform
-Dietary is a multi-tenant SaaS platform that digitizes the dietitian-client workflow. Dietitians manage clients, track measurements, and create personalized meal plans through a web panel, while clients follow their daily nutrition plans via a mobile app with progress tracking and notifications.
-A comprehensive SaaS platform connecting dietitians with clients for meal planning, progress tracking, and daily nutrition management.
+
+# Dietary – Dietitian–Client Management Platform
+
+Dietary is a SaaS platform that digitizes the dietitian–client workflow. Dietitians manage clients, track body measurements, set goals, and create flexible meal plans through a web panel. Clients follow their daily nutrition plans via a mobile application with meal selection, tracking, progress visualization, and notifications.
+
+The current scope targets a single dietitian account with multiple clients. The backend architecture remains multi-tenant ready by scoping all client data under a dietitian context.
 
 ## Overview
 
-Dietary digitizes the dietitian-client workflow. Dietitians manage clients, track measurements, and create personalized meal plans through a web panel, while clients follow their daily nutrition plans via a mobile app.
+Dietary covers the full nutrition workflow:
+
+- Dietitian side: client management, measurement tracking, goal calculation, flexible meal plan creation, reporting
+- Client side: daily meal selection, meal completion tracking, water tracking, progress monitoring, notifications
+
+The system is designed around real-world dietitian practices where meal plans provide multiple alternatives per meal instead of fixed day-based menus.
 
 ## Tech Stack
 
 ### Backend
-- Spring Boot 3.x (Java 17+)
-- Spring Security + JWT
-- Spring Data JPA
+- Java 17+
+- Spring Boot 3.x
+- Spring Security (JWT access & refresh tokens)
+- Spring Data JPA (Hibernate)
 - PostgreSQL
 - Gradle
+- OpenAPI / Swagger
 
 ### Web Frontend (Dietitian Panel)
 - React 18 + TypeScript
 - Vite
 - TailwindCSS
-- React Query (API state management)
-- Zustand (global state)
-- Recharts (charts)
+- React Query (server state management)
+- Zustand (global client state)
+- Recharts (charts and analytics)
 
 ### Mobile App (Client App)
 - React Native + Expo
 - React Navigation
 - Axios
-- AsyncStorage
+- AsyncStorage (offline cache)
 - Expo Notifications
 
+
 ## Project Structure
-```
+
+
 dietary/
 ├── backend/          # Spring Boot API
-├── web/             # React web panel for dietitians
-└── mobile/          # React Native app for clients
-```
+├── web/              # React web panel for dietitians
+└── mobile/           # React Native app for clients
+
+## Backend Architecture
+
+The backend follows a pragmatic clean architecture approach.  
+It maintains a familiar layered API structure while isolating domain logic from infrastructure concerns.
+
+### Conceptual Layers
+
+- API (Controllers): HTTP handling, DTOs, validation
+- Application (Services): orchestration, transactions, authorization
+- Domain: business rules and calculations
+- Infrastructure: persistence, file handling, external integrations
+
+### Package-by-Feature Structure
+
+
+backend/src/main/java/com/dietary
+├── auth/
+│   ├── controller/
+│   ├── service/
+│   ├── domain/
+│   └── repository/
+├── client/
+│   ├── controller/
+│   ├── service/
+│   ├── domain/
+│   └── repository/
+├── measurement/
+│   ├── controller/
+│   ├── service/
+│   ├── domain/
+│   ├── parser/          # PDF parsing (Tarti.com template)
+│   └── repository/
+├── goal/
+│   ├── controller/
+│   ├── service/
+│   ├── domain/
+│   └── repository/
+├── food/
+│   ├── controller/
+│   ├── service/
+│   ├── domain/
+│   └── repository/
+├── mealplan/
+│   ├── controller/
+│   ├── service/
+│   ├── domain/
+│   ├── calculator/      # calorie and macro calculations
+│   └── repository/
+├── tracking/
+│   ├── controller/
+│   ├── service/
+│   ├── domain/
+│   └── repository/
+└── common/
+├── security/
+├── exception/
+├── dto/
+├── mapper/
+└── util/
+
+
+## Core Domain Concepts
+
+### Meal Plan Model (Alternative-Based)
+
+Meal plans are not tied to calendar days.
+
+A plan consists of meals, and each meal contains multiple selectable alternatives.  
+Clients choose one alternative per meal each day.
+
+Conceptual structure:
+Meal Plan
+├── Meal (Breakfast)
+│    ├── Option A
+│    ├── Option B
+│    └── Option C
+├── Meal (Lunch)
+│    ├── Option A
+│    ├── Option B
+│    └── Option C
+└── Meal (Dinner)
+├── Option A
+├── Option B
+└── Option C
+
+This model reflects real dietitian programs that offer flexible combinations rather than fixed daily menus.
 
 ## Features
 
 ### Dietitian Web Panel
-- Client management (add, edit, track)
-- Measurement tracking (manual entry + PDF upload)
-- Goal setting with automatic calorie calculations
-- Meal plan creation (two modes: macro-based and calorie-percentage-based)
-- Progress reports and charts
-- Dashboard with analytics
+- Authentication and profile management
+- Client management (add, edit, list, soft delete)
+- Measurement tracking
+  - Manual entry
+  - PDF upload and parsing (Tarti.com output for demo)
+  - Historical measurement tables and charts
+- Goal setting
+  - BMR and TDEE calculation
+  - Target calorie calculation
+  - Weekly expected weight change
+- Meal plan creation
+  - Alternative-based meal structure
+  - Macro-based planning
+  - Calorie/percentage-based planning
+- Plan assignment (single active plan per client)
+- Progress reports and analytics dashboard
 
 ### Client Mobile App
-- Daily meal plan viewing
+- Authentication
+- Daily plan view
+- Meal alternative selection per meal
 - Meal completion tracking
 - Water intake tracking
-- Progress visualization (weight chart, measurements)
-- Push notifications (meal reminders, motivation)
-- Offline support
+- Progress visualization (weight and measurements)
+- Push notifications
+- Offline viewing of recent plans and measurements
 
-## Key Requirements
+## Multi-Tenancy Model
 
-### Authentication & Security
-- JWT-based authentication
-- Role-based access control (Dietitian/Client)
+- Demo assumes a single dietitian account
+- Data model remains multi-tenant ready
+- All client-related entities are scoped by `dietitian_id`
+- Authorization rules enforce strict data isolation
+
+## Authentication & Security
+
+- JWT-based authentication (access and refresh tokens)
+- Role-based access control (Dietitian / Client)
 - BCrypt password hashing
-- HTTPS required
+- HTTPS required for production
+- Authorization rules:
+  - Dietitians can only access their own clients
+  - Clients can only access their own data
 
-### Database Schema
-Main entities: Users, Clients, Measurements, Goals, Foods, MealPlans, MealPlanItems, DailyTracking, WaterTracking
+## Automated Calculations
 
-### Automated Calculations
-- BMR (Basal Metabolic Rate) - Harris-Benedict formula
-- TDEE (Total Daily Energy Expenditure)
-- Target calories based on goals
+- BMR (Harris–Benedict formula)
+- TDEE (activity factor based)
+- Daily calorie target
 - Weekly expected weight change
+- BMI calculation on measurement entry
 
-### Meal Planning Modes
+## Database Schema (High Level)
 
-**Mode A: Macro-Based Planning**
-- Add foods by selecting and specifying portions/grams
-- Automatic calorie and macro calculations
-- Meal-by-meal planning
+Main entities:
+- Users (Dietitians)
+- Clients
+- Measurements
+- Goals
+- Foods
+- MealPlans
+- Meals
+- MealOptions
+- MealOptionItems
+- DailyTracking
+- WaterTracking
 
-**Mode B: Calorie/Percentage-Based Planning**
-- Set daily calorie target
-- Define macro distribution (Carbs/Protein/Fat %)
-- Distribute to meals automatically or manually
-- Track remaining calories/macros
 
-### Features NOT in MVP
-- Messaging system
-- Appointment management
-- Payment integration
-- Exercise planning
-- Photo progress tracking
-- Barcode scanner
-- AI meal suggestions
-
-## Development Setup
-
-**Requirements:**
-- Java 17+
-- Node.js 20+
-- PostgreSQL 15+
-- Git
-
-**Backend:**
-```bash
-cd backend
-./gradlew bootRun
-```
-
-**Web:**
-```bash
-cd web
-npm install
-npm run dev
-```
-
-**Mobile:**
-```bash
-cd mobile
-npm install
-npx expo start
-```
-
-## API Endpoints
+## API Endpoints (Draft)
 
 ### Authentication
 - POST /api/auth/register
 - POST /api/auth/login
+- POST /api/auth/refresh
 
 ### Clients
 - GET /api/clients
@@ -139,43 +224,74 @@ npx expo start
 ### Measurements
 - GET /api/clients/{id}/measurements
 - POST /api/clients/{id}/measurements
+- POST /api/clients/{id}/measurements/parse
 
 ### Goals
-- POST /api/goals
-- GET /api/goals/{clientId}
+- POST /api/clients/{id}/goals
+- GET /api/clients/{id}/goals/current
 
 ### Foods
-- GET /api/foods/search?query=
-- POST /api/foods (custom food)
+- GET /api/foods/search
+- POST /api/foods
 
 ### Meal Plans
 - POST /api/meal-plans
+- PUT /api/meal-plans/{id}
+- POST /api/meal-plans/{id}/assign
 - GET /api/meal-plans/client/{clientId}/active
-- GET /api/meal-plans/templates
 
 ### Mobile
 - GET /api/mobile/daily-plan
+- POST /api/mobile/select-meal-option
 - POST /api/mobile/track-meal
 - POST /api/mobile/track-water
 - GET /api/mobile/progress
 
-## Performance Requirements
-- Page load: < 2 seconds
-- API response: < 500ms
-- Mobile app launch: < 3 seconds
+## Performance Targets
 
-## Browser Support
-- Chrome (last 2 versions)
-- Firefox (last 2 versions)
-- Safari (last 2 versions)
-- Edge (last 2 versions)
+- Page load time < 2 seconds
+- Typical API response < 500 ms
+- Mobile app launch < 3 seconds
 
-## Mobile Support
-- iOS 13+
-- Android 8.0+ (API 26)
+## Development Setup
 
-## License
-TBD
+Requirements:
+- Java 17+
+- Node.js 20+
+- PostgreSQL 15+
+- Git
 
-## Contact
-TBD
+Backend:
+```bash
+cd backend
+./gradlew bootRun
+````
+
+Web:
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+Mobile:
+
+```bash
+cd mobile
+npm install
+npx expo start
+```
+
+---
+
+## Out of Scope (MVP)
+
+* Messaging system
+* Appointment scheduling
+* Payment integration
+* Exercise planning
+* Photo-based progress tracking
+* Barcode scanning
+* AI-driven meal suggestions
+
