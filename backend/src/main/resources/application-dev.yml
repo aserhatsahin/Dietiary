@@ -5,9 +5,9 @@ spring:
 
   # PostgreSQL - Development
   datasource:
-    url: jdbc:postgresql://localhost:5432/dietary_dev
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5432/dietiary_dev
+    username: dietiary
+    password: dietiary123!
     driver-class-name: org.postgresql.Driver
   
   # JPA - Development
@@ -22,3 +22,7 @@ logging:
     com.dietary: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
+
+# Server - Development
+server:
+  port: 8081
