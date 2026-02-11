@@ -57,6 +57,11 @@ public class Measurement {
     @Column(name = "bmi", precision = 5, scale = 2)
     private BigDecimal bmi;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "entry_method")
+    @Builder.Default
+    private EntryMethod entryMethod = EntryMethod.MANUAL;
+
     @Column(columnDefinition = "TEXT")
     private String notes;
 
