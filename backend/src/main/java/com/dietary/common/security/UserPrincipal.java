@@ -23,9 +23,14 @@ public class UserPrincipal implements UserDetails {
     private final String password;
     private final String fullName;
     private final Role role;
+    private final UUID clientId; // For CLIENT users, their associated client record
     private final Collection<? extends GrantedAuthority> authorities;
 
     public static UserPrincipal create(User user) {
+        return create(user, null);
+    }
+
+    public static UserPrincipal create(User user, UUID clientId) {
         List<GrantedAuthority> authorities = List.of(
                 new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
 
@@ -35,6 +40,7 @@ public class UserPrincipal implements UserDetails {
                 .password(user.getPasswordHash())
                 .fullName(user.getFullName())
                 .role(user.getRole())
+                .clientId(clientId)
                 .authorities(authorities)
                 .build();
     }
