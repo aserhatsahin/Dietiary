@@ -24,8 +24,13 @@ public class Food {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dietitian_id", nullable = false)
+    @JoinColumn(name = "dietitian_id")
     private User dietitian;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private FoodSource source = FoodSource.CUSTOM;
 
     @Column(nullable = false)
     private String name;
