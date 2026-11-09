@@ -2,7 +2,9 @@ package com.dietary.client.controller;
 
 import com.dietary.auth.domain.User;
 import com.dietary.auth.repository.UserRepository;
+import com.dietary.auth.service.ClientInviteService;
 import com.dietary.client.controller.dto.ClientDTO;
+import com.dietary.client.controller.dto.ClientInviteDTO;
 import com.dietary.client.controller.dto.ClientRequest;
 import com.dietary.client.service.ClientService;
 import com.dietary.common.dto.ApiResponse;
@@ -30,6 +32,7 @@ import java.util.UUID;
 public class ClientController {
 
     private final ClientService clientService;
+    private final ClientInviteService clientInviteService;
     private final UserRepository userRepository;
 
     @GetMapping
@@ -94,5 +97,19 @@ public class ClientController {
             @CurrentUser UserPrincipal currentUser) {
         ClientDTO client = clientService.toggleClientActive(id, currentUser.getId());
         return ResponseEntity.ok(ApiResponse.success("Client status updated", client));
+    }
+
+    @PostMapping("/{id}/invite")
+    @PreAuthorize("hasRole('DIETITIAN')")
+    @Operation(summary = "Invite a client",
+            description = "Creates an invite token the client uses with /api/auth/client/accept-invite. "
+                    + "Calling it again replaces the previous token.")
+    public ResponseEntity<ApiResponse<ClientInviteDTO>> inviteClient(
+            @PathVariable UUID id,
+            @CurrentUser UserPrincipal currentUser) {
+        ClientInviteDTO invite = clientInviteService.createInvite(id, currentUser.getId());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Invite created successfully", invite));
     }
 }
