@@ -22,7 +22,7 @@ The plan puts something people can try online first: a deployed API and web pane
 | mealplan | templates, get, create, update, activate, client's active plan | delete |
 | tracking | client: daily plan, track meal, track water; dietitian: progress | client-side endpoints for own profile, measurements and goal |
 
-Cross-cutting gaps: only a few unit tests, no DB migrations (only the `dev` profile can start because the default profile uses `ddl-auto: validate`), no CI, no Dockerfile.
+Cross-cutting gaps: only a few unit tests, no DB migrations (only the `dev` profile can start because the default profile uses `ddl-auto: validate`), no Dockerfile.
 
 ## Phase 0: Build and docs hygiene
 
@@ -36,7 +36,7 @@ Cross-cutting gaps: only a few unit tests, no DB migrations (only the `dev` prof
 - [x] Return 403 (not 500) when a role is not allowed
 - [ ] Flyway migrations for the whole schema; `validate` in every profile
 - [ ] Integration tests with Testcontainers (auth, client isolation between dietitians, meal plan, tracking)
-- [ ] GitHub Actions: build and test on every PR
+- [x] GitHub Actions: build and test on every PR
 - [ ] Client-facing endpoints under `/api/mobile`: me, my measurements, my goal, my progress
 - [ ] Missing CRUD: measurement update/delete, meal plan delete, goal history
 - [ ] Production config from environment variables, plus a Dockerfile
