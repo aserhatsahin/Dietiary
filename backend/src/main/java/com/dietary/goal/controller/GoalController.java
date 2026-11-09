@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,6 +27,15 @@ import java.util.UUID;
 public class GoalController {
 
     private final GoalService goalService;
+
+    @GetMapping
+    @PreAuthorize("hasRole('DIETITIAN')")
+    @Operation(summary = "Get goal history", description = "All goals for a client, newest first; the active one has isActive=true")
+    public ResponseEntity<ApiResponse<List<GoalDTO>>> getGoalHistory(
+            @PathVariable UUID clientId,
+            @CurrentUser UserPrincipal currentUser) {
+        return ResponseEntity.ok(ApiResponse.success(goalService.getGoalHistory(clientId, currentUser.getId())));
+    }
 
     @GetMapping("/current")
     @PreAuthorize("hasRole('DIETITIAN')")

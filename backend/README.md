@@ -88,8 +88,12 @@ All endpoints except `/api/auth/**` need an `Authorization: Bearer <token>` head
 | GET | /api/clients/{clientId}/measurements | Measurement history |
 | GET | /api/clients/{clientId}/measurements/latest | Latest measurement |
 | POST | /api/clients/{clientId}/measurements | Add a measurement (BMI and deltas are calculated) |
+| PUT | /api/clients/{clientId}/measurements/{measurementId} | Correct a measurement (BMI is recalculated) |
+| DELETE | /api/clients/{clientId}/measurements/{measurementId} | Delete a measurement |
+| GET | /api/clients/{clientId}/goals | Goal history, newest first |
 | GET | /api/clients/{clientId}/goals/current | Current goal |
 | POST | /api/clients/{clientId}/goals | Create a goal (BMR, TDEE, calorie target) |
+| GET | /api/clients/{clientId}/meal-plans | All of a client's meal plans |
 | GET | /api/clients/{clientId}/meal-plans/active | Client's active meal plan |
 | GET | /api/clients/{clientId}/progress | Client progress summary |
 | GET | /api/foods/search | Search foods |
@@ -100,6 +104,7 @@ All endpoints except `/api/auth/**` need an `Authorization: Bearer <token>` head
 | POST | /api/meal-plans | Create a meal plan |
 | PUT | /api/meal-plans/{id} | Update a meal plan |
 | POST | /api/meal-plans/{id}/activate | Make a plan the client's active plan |
+| DELETE | /api/meal-plans/{id} | Delete a plan or template (409 if it has tracking history) |
 
 ### Client (mobile)
 

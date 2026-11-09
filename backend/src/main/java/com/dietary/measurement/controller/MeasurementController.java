@@ -60,4 +60,28 @@ public class MeasurementController {
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Measurement recorded successfully", measurement));
     }
+
+    @PutMapping("/{measurementId}")
+    @PreAuthorize("hasRole('DIETITIAN')")
+    @Operation(summary = "Update a measurement", description = "Replaces a measurement's values; BMI is recalculated")
+    public ResponseEntity<ApiResponse<MeasurementDTO>> updateMeasurement(
+            @PathVariable UUID clientId,
+            @PathVariable UUID measurementId,
+            @Valid @RequestBody MeasurementRequest request,
+            @CurrentUser UserPrincipal currentUser) {
+        MeasurementDTO measurement = measurementService.updateMeasurement(
+                clientId, measurementId, request, currentUser.getId());
+        return ResponseEntity.ok(ApiResponse.success("Measurement updated successfully", measurement));
+    }
+
+    @DeleteMapping("/{measurementId}")
+    @PreAuthorize("hasRole('DIETITIAN')")
+    @Operation(summary = "Delete a measurement")
+    public ResponseEntity<ApiResponse<Void>> deleteMeasurement(
+            @PathVariable UUID clientId,
+            @PathVariable UUID measurementId,
+            @CurrentUser UserPrincipal currentUser) {
+        measurementService.deleteMeasurement(clientId, measurementId, currentUser.getId());
+        return ResponseEntity.ok(ApiResponse.success("Measurement deleted successfully"));
+    }
 }

@@ -16,10 +16,10 @@ The plan puts something people can try online first: a deployed API and web pane
 |---|---|---|
 | auth | register, login, refresh, accept-invite, invite a client | invite email delivery |
 | client | list, get, create, update, delete, toggle active | none |
-| measurement | list, latest, create (BMI + deltas) | update/delete; PDF import (only the enum exists) |
-| goal | current goal, create (BMR/TDEE/calorie target) | goal history |
+| measurement | list, latest, create, update, delete (BMI + deltas) | PDF import (only the enum exists) |
+| goal | current goal, history, create (BMR/TDEE/calorie target) | none |
 | food | search, categories, create, seed data | none |
-| mealplan | templates, get, create, update, activate, client's active plan | delete |
+| mealplan | templates, get, create, update, activate, delete, client's plans and active plan | none |
 | tracking | client: daily plan, track meal, track water, own profile/measurements/goal/progress; dietitian: progress | none |
 
 Cross-cutting gaps: no Dockerfile, no production config from environment variables.
@@ -39,7 +39,8 @@ Cross-cutting gaps: no Dockerfile, no production config from environment variabl
 - [x] Bugs found by the integration tests: client logins had no `clientId` (every mobile endpoint failed), food search failed unless both filters were given, meal plan templates could not be saved, today's date was rejected for measurements, malformed requests returned 500
 - [x] GitHub Actions: build and test on every PR
 - [x] Client-facing endpoints under `/api/mobile`: me, my measurements, my goal, my progress
-- [ ] Missing CRUD: measurement update/delete, meal plan delete, goal history
+- [x] Missing CRUD: measurement update/delete, meal plan delete, goal history, a client's plan list
+- [x] Measurement deltas compared against the previous measurement by date (they used the newest one)
 - [ ] Production config from environment variables, plus a Dockerfile
 - [x] Upgrade Spring Boot 3.2 → 4.1 (3.x is out of support), Gradle 8.5 → 9.9
 

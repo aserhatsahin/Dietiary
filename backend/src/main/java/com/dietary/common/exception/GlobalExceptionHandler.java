@@ -3,6 +3,7 @@ package com.dietary.common.exception;
 import com.dietary.common.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.ResponseEntity;
@@ -88,6 +89,32 @@ public class GlobalExceptionHandler {
                 .path(request.getRequestURI())
                 .build();
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(
+            ConflictException ex, HttpServletRequest request) {
+        return conflict(ex.getMessage(), request);
+    }
+
+    /** Safety net: a foreign key or unique constraint the service layer did not check first. */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex, HttpServletRequest request) {
+        log.warn("Data integrity violation on {} {}: {}", request.getMethod(), request.getRequestURI(),
+                ex.getMostSpecificCause().getMessage());
+        return conflict("The request conflicts with existing data", request);
+    }
+
+    private ResponseEntity<ErrorResponse> conflict(String message, HttpServletRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(Instant.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(message)
+                .path(request.getRequestURI())
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler(DuplicateResourceException.class)

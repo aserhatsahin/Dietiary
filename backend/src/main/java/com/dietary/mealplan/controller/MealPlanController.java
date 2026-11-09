@@ -79,4 +79,15 @@ public class MealPlanController {
         MealPlanDTO plan = mealPlanService.activateMealPlan(id, currentUser.getId());
         return ResponseEntity.ok(ApiResponse.success("Meal plan activated successfully", plan));
     }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('DIETITIAN')")
+    @Operation(summary = "Delete a meal plan",
+            description = "Deletes a template or a client plan. Plans with tracking history cannot be deleted (409).")
+    public ResponseEntity<ApiResponse<Void>> deleteMealPlan(
+            @PathVariable UUID id,
+            @CurrentUser UserPrincipal currentUser) {
+        mealPlanService.deleteMealPlan(id, currentUser.getId());
+        return ResponseEntity.ok(ApiResponse.success("Meal plan deleted successfully"));
+    }
 }
