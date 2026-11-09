@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -23,6 +24,15 @@ import java.util.UUID;
 public class ClientMealPlanController {
 
     private final MealPlanService mealPlanService;
+
+    @GetMapping
+    @PreAuthorize("hasRole('DIETITIAN')")
+    @Operation(summary = "List a client's meal plans", description = "All plans assigned to the client, newest first")
+    public ResponseEntity<ApiResponse<List<MealPlanDTO>>> getClientMealPlans(
+            @PathVariable UUID clientId,
+            @CurrentUser UserPrincipal currentUser) {
+        return ResponseEntity.ok(ApiResponse.success(mealPlanService.getPlansForClient(clientId, currentUser.getId())));
+    }
 
     @GetMapping("/active")
     @PreAuthorize("hasRole('DIETITIAN')")

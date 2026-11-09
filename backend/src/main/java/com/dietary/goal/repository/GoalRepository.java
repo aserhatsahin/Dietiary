@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,6 +18,9 @@ public interface GoalRepository extends JpaRepository<Goal, UUID> {
 
     @Query("SELECT g FROM Goal g WHERE g.client.id = :clientId AND g.client.dietitian.id = :dietitianId AND g.isActive = true")
     Optional<Goal> findActiveByClientIdAndDietitianId(UUID clientId, UUID dietitianId);
+
+    @Query("SELECT g FROM Goal g WHERE g.client.id = :clientId AND g.client.dietitian.id = :dietitianId ORDER BY g.createdAt DESC")
+    List<Goal> findAllByClientIdAndDietitianId(UUID clientId, UUID dietitianId);
 
     @Modifying
     @Query("UPDATE Goal g SET g.isActive = false WHERE g.client.id = :clientId AND g.isActive = true")

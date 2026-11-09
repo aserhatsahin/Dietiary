@@ -22,6 +22,9 @@ public interface DailyTrackingRepository extends JpaRepository<DailyTracking, UU
     @Query("SELECT dt FROM DailyTracking dt WHERE dt.client.id = :clientId AND dt.trackingDate BETWEEN :fromDate AND :toDate")
     List<DailyTracking> findByClientIdAndDateRange(UUID clientId, LocalDate fromDate, LocalDate toDate);
 
+    @Query("SELECT COUNT(dt) > 0 FROM DailyTracking dt WHERE dt.meal.mealPlan.id = :mealPlanId")
+    boolean existsByMealPlanId(UUID mealPlanId);
+
     @Query("SELECT COUNT(dt) FROM DailyTracking dt WHERE dt.client.id = :clientId AND dt.isCompleted = true AND dt.trackingDate BETWEEN :fromDate AND :toDate")
     long countCompletedByClientIdAndDateRange(UUID clientId, LocalDate fromDate, LocalDate toDate);
 }

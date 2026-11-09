@@ -5,12 +5,14 @@ import com.dietary.auth.repository.UserRepository;
 import com.dietary.client.domain.Client;
 import com.dietary.client.repository.ClientRepository;
 import com.dietary.common.exception.BadRequestException;
+import com.dietary.common.exception.ConflictException;
 import com.dietary.common.exception.ResourceNotFoundException;
 import com.dietary.food.domain.Food;
 import com.dietary.food.repository.FoodRepository;
 import com.dietary.mealplan.controller.dto.*;
 import com.dietary.mealplan.domain.*;
 import com.dietary.mealplan.repository.MealPlanRepository;
+import com.dietary.tracking.repository.DailyTrackingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class MealPlanService {
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final FoodRepository foodRepository;
+    private final DailyTrackingRepository dailyTrackingRepository;
 
     @Transactional(readOnly = true)
     public List<MealPlanDTO> getTemplates(UUID dietitianId) {
@@ -44,6 +47,15 @@ public class MealPlanService {
         MealPlan plan = mealPlanRepository.findByIdAndDietitianId(planId, dietitianId)
                 .orElseThrow(() -> new ResourceNotFoundException("MealPlan", "id", planId));
         return MealPlanDTO.fromEntity(plan);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MealPlanDTO> getPlansForClient(UUID clientId, UUID dietitianId) {
+        clientRepository.findByIdAndDietitianId(clientId, dietitianId)
+                .orElseThrow(() -> new ResourceNotFoundException("Client", "id", clientId));
+        return mealPlanRepository.findAllByClientIdAndDietitianId(clientId, dietitianId).stream()
+                .map(MealPlanDTO::fromEntitySummary)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -97,8 +109,13 @@ public class MealPlanService {
         mealPlan.setDescription(request.getDescription());
         mealPlan.setDailyCalories(request.getDailyCalories());
 
-        // Clear and recreate meals if provided
+        // Clear and recreate meals if provided. Tracked meals cannot be replaced: the client's
+        // history points at them.
         if (request.getMeals() != null) {
+            if (dailyTrackingRepository.existsByMealPlanId(planId)) {
+                throw new ConflictException("This plan has tracking history, so its meals cannot be replaced. "
+                        + "Create a new plan instead; name and description can still be edited.");
+            }
             mealPlan.getMeals().clear();
             for (int i = 0; i < request.getMeals().size(); i++) {
                 MealRequest mealRequest = request.getMeals().get(i);
@@ -111,6 +128,17 @@ public class MealPlanService {
         log.info("Updated meal plan '{}'", mealPlan.getName());
 
         return MealPlanDTO.fromEntity(mealPlan);
+    }
+
+    @Transactional
+    public void deleteMealPlan(UUID planId, UUID dietitianId) {
+        MealPlan mealPlan = mealPlanRepository.findByIdAndDietitianId(planId, dietitianId)
+                .orElseThrow(() -> new ResourceNotFoundException("MealPlan", "id", planId));
+        if (dailyTrackingRepository.existsByMealPlanId(planId)) {
+            throw new ConflictException("This plan has tracking history and cannot be deleted.");
+        }
+        mealPlanRepository.delete(mealPlan);
+        log.info("Deleted meal plan '{}'", planId);
     }
 
     @Transactional

@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -50,6 +51,19 @@ public class GoalService {
         GoalDTO dto = GoalDTO.fromEntity(goal);
         dto.setActivityMultiplier(getActivityMultiplier(goal.getActivityLevel()));
         return dto;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GoalDTO> getGoalHistory(UUID clientId, UUID dietitianId) {
+        clientRepository.findByIdAndDietitianId(clientId, dietitianId)
+                .orElseThrow(() -> new ResourceNotFoundException("Client", "id", clientId));
+        return goalRepository.findAllByClientIdAndDietitianId(clientId, dietitianId).stream()
+                .map(goal -> {
+                    GoalDTO dto = GoalDTO.fromEntity(goal);
+                    dto.setActivityMultiplier(getActivityMultiplier(goal.getActivityLevel()));
+                    return dto;
+                })
+                .toList();
     }
 
     @Transactional

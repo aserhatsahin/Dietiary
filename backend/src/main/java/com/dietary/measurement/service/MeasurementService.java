@@ -14,10 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -31,15 +30,14 @@ public class MeasurementService {
     public List<MeasurementDTO> getAllMeasurements(UUID clientId, UUID dietitianId) {
         validateClientBelongsToDietitian(clientId, dietitianId);
 
+        // Newest first, so each measurement's previous one is the next element.
         List<Measurement> measurements = measurementRepository.findAllByClientIdAndDietitianId(clientId, dietitianId);
-
-        // Add delta for each measurement compared to previous
-        return measurements.stream()
-                .map(m -> {
-                    Optional<Measurement> previous = measurementRepository.findPreviousByClientId(clientId, m.getId());
-                    return MeasurementDTO.fromEntityWithDelta(m, previous.orElse(null));
-                })
-                .collect(Collectors.toList());
+        List<MeasurementDTO> result = new ArrayList<>(measurements.size());
+        for (int i = 0; i < measurements.size(); i++) {
+            Measurement previous = i + 1 < measurements.size() ? measurements.get(i + 1) : null;
+            result.add(MeasurementDTO.fromEntityWithDelta(measurements.get(i), previous));
+        }
+        return result;
     }
 
     @Transactional(readOnly = true)
@@ -48,9 +46,7 @@ public class MeasurementService {
 
         Measurement latest = measurementRepository.findLatestByClientId(clientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Measurement", "clientId", clientId));
-
-        Optional<Measurement> previous = measurementRepository.findPreviousByClientId(clientId, latest.getId());
-        return MeasurementDTO.fromEntityWithDelta(latest, previous.orElse(null));
+        return withDelta(latest);
     }
 
     @Transactional
@@ -58,31 +54,57 @@ public class MeasurementService {
         Client client = clientRepository.findByIdAndDietitianId(clientId, dietitianId)
                 .orElseThrow(() -> new ResourceNotFoundException("Client", "id", clientId));
 
-        // Calculate BMI: weight(kg) / height(m)^2
-        BigDecimal bmi = calculateBmi(request.getWeightKg(), client.getHeightCm());
+        Measurement measurement = Measurement.builder().client(client).build();
+        applyRequest(measurement, request, client);
 
-        Measurement measurement = Measurement.builder()
-                .client(client)
-                .measurementDate(request.getMeasurementDate())
-                .weightKg(request.getWeightKg())
-                .bodyFatPercentage(request.getBodyFatPercentage())
-                .muscleMassKg(request.getMuscleMassKg())
-                .waterPercentage(request.getWaterPercentage())
-                .boneMassKg(request.getBoneMassKg())
-                .visceralFat(request.getVisceralFat())
-                .basalMetabolicRate(request.getBasalMetabolicRate())
-                .metabolicAge(request.getMetabolicAge())
-                .bmi(bmi)
-                .notes(request.getNotes())
-                .entryMethod(request.getEntryMethod())
-                .build();
+        measurement = measurementRepository.saveAndFlush(measurement);
+        log.info("Created measurement for client '{}' with BMI: {}", client.getId(), measurement.getBmi());
+        return withDelta(measurement);
+    }
 
-        measurement = measurementRepository.save(measurement);
-        log.info("Created measurement for client '{}' with BMI: {}", client.getFullName(), bmi);
+    @Transactional
+    public MeasurementDTO updateMeasurement(UUID clientId, UUID measurementId, MeasurementRequest request,
+                                            UUID dietitianId) {
+        Measurement measurement = findOwnedMeasurement(clientId, measurementId, dietitianId);
+        applyRequest(measurement, request, measurement.getClient());
 
-        // Get previous measurement for delta calculation
-        Optional<Measurement> previous = measurementRepository.findPreviousByClientId(clientId, measurement.getId());
-        return MeasurementDTO.fromEntityWithDelta(measurement, previous.orElse(null));
+        measurement = measurementRepository.saveAndFlush(measurement);
+        log.info("Updated measurement '{}' for client '{}'", measurementId, clientId);
+        return withDelta(measurement);
+    }
+
+    @Transactional
+    public void deleteMeasurement(UUID clientId, UUID measurementId, UUID dietitianId) {
+        Measurement measurement = findOwnedMeasurement(clientId, measurementId, dietitianId);
+        measurementRepository.delete(measurement);
+        log.info("Deleted measurement '{}' for client '{}'", measurementId, clientId);
+    }
+
+    private void applyRequest(Measurement measurement, MeasurementRequest request, Client client) {
+        measurement.setMeasurementDate(request.getMeasurementDate());
+        measurement.setWeightKg(request.getWeightKg());
+        measurement.setBodyFatPercentage(request.getBodyFatPercentage());
+        measurement.setMuscleMassKg(request.getMuscleMassKg());
+        measurement.setWaterPercentage(request.getWaterPercentage());
+        measurement.setBoneMassKg(request.getBoneMassKg());
+        measurement.setVisceralFat(request.getVisceralFat());
+        measurement.setBasalMetabolicRate(request.getBasalMetabolicRate());
+        measurement.setMetabolicAge(request.getMetabolicAge());
+        measurement.setNotes(request.getNotes());
+        measurement.setEntryMethod(request.getEntryMethod());
+        // BMI = weight(kg) / height(m)^2, recalculated whenever the weight changes
+        measurement.setBmi(calculateBmi(request.getWeightKg(), client.getHeightCm()));
+    }
+
+    private MeasurementDTO withDelta(Measurement measurement) {
+        Measurement previous = measurementRepository.findPrevious(measurement.getClient().getId(), measurement.getId(),
+                measurement.getMeasurementDate(), measurement.getCreatedAt()).orElse(null);
+        return MeasurementDTO.fromEntityWithDelta(measurement, previous);
+    }
+
+    private Measurement findOwnedMeasurement(UUID clientId, UUID measurementId, UUID dietitianId) {
+        return measurementRepository.findByIdAndClientIdAndDietitianId(measurementId, clientId, dietitianId)
+                .orElseThrow(() -> new ResourceNotFoundException("Measurement", "id", measurementId));
     }
 
     private BigDecimal calculateBmi(BigDecimal weightKg, BigDecimal heightCm) {
