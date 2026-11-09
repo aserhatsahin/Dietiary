@@ -24,7 +24,7 @@ The system is designed around real-world dietitian practices where meal plans pr
 
 ### Backend
 - Java 17+
-- Spring Boot 3.x
+- Spring Boot 4.1
 - Spring Security (JWT access & refresh tokens)
 - Spring Data JPA (Hibernate)
 - PostgreSQL

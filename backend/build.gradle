@@ -1,14 +1,16 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.2'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.springframework.boot' version '4.1.2'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.dietary'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 configurations {
@@ -23,41 +25,50 @@ repositories {
 
 dependencies {
     // Spring Boot Starters
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    
+
     // Database
     runtimeOnly 'org.postgresql:postgresql'
-    implementation 'org.flywaydb:flyway-core'
-    
+    implementation 'org.springframework.boot:spring-boot-starter-flyway'
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql'
+
     // JWT
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-    
+    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+
     // OpenAPI / Swagger
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-    
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0'
+
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    
+
     // Dev Tools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    
+
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-    testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:testcontainers-junit-jupiter'
+    testImplementation 'org.testcontainers:testcontainers-postgresql'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
-
-// Boot 3.2 ships Testcontainers 1.19.3, which cannot talk to Docker Engine 29+ (minimum API 1.44).
-ext['testcontainers.version'] = '1.21.4'
 
 tasks.named('test') {
     useJUnitPlatform()
+    // Print each test's outcome so CI logs show what ran, was skipped or failed.
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-Xlint:deprecation', '-Xlint:removal']
 }
