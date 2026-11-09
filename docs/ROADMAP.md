@@ -14,7 +14,7 @@ The plan puts something people can try online first: a deployed API and web pane
 
 | Module | Working endpoints | Missing |
 |---|---|---|
-| auth | register, login, refresh, accept-invite | nothing creates invites yet, so clients cannot sign up |
+| auth | register, login, refresh, accept-invite, invite a client | invite email delivery |
 | client | list, get, create, update, delete, toggle active | none |
 | measurement | list, latest, create (BMI + deltas) | update/delete; PDF import (only the enum exists) |
 | goal | current goal, create (BMR/TDEE/calorie target) | goal history |
@@ -22,7 +22,7 @@ The plan puts something people can try online first: a deployed API and web pane
 | mealplan | templates, get, create, update, activate, client's active plan | delete |
 | tracking | client: daily plan, track meal, track water; dietitian: progress | client-side endpoints for own profile, measurements and goal |
 
-Cross-cutting gaps: no tests, no DB migrations (only the `dev` profile can start because the default profile uses `ddl-auto: validate`), no CI, no Dockerfile.
+Cross-cutting gaps: only a few unit tests, no DB migrations (only the `dev` profile can start because the default profile uses `ddl-auto: validate`), no CI, no Dockerfile.
 
 ## Phase 0: Build and docs hygiene
 
@@ -32,7 +32,8 @@ Cross-cutting gaps: no tests, no DB migrations (only the `dev` profile can start
 
 ## Phase 1: Harden the backend
 
-- [ ] Invite flow: `POST /api/clients/{id}/invite` creates or regenerates a `ClientInvite` and returns the token (email delivery later)
+- [x] Invite flow: `POST /api/clients/{id}/invite` creates or regenerates a `ClientInvite` and returns the token (email delivery later)
+- [x] Return 403 (not 500) when a role is not allowed
 - [ ] Flyway migrations for the whole schema; `validate` in every profile
 - [ ] Integration tests with Testcontainers (auth, client isolation between dietitians, meal plan, tracking)
 - [ ] GitHub Actions: build and test on every PR

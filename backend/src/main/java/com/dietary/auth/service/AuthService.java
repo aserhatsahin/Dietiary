@@ -131,6 +131,9 @@ public class AuthService {
         // Find the client profile
         Client client = clientRepository.findById(invite.getClientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Client", "id", invite.getClientId()));
+        if (client.isDeleted()) {
+            throw new TokenException("Invalid invite token");
+        }
 
         // Create new client user account
         User user = User.builder()

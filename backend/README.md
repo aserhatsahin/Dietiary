@@ -63,6 +63,7 @@ All endpoints except `/api/auth/**` need an `Authorization: Bearer <token>` head
 | PUT | /api/clients/{id} | Update a client |
 | DELETE | /api/clients/{id} | Delete a client |
 | PATCH | /api/clients/{id}/toggle-active | Activate / deactivate a client |
+| POST | /api/clients/{id}/invite | Create an invite token for the client (calling again replaces it) |
 | GET | /api/clients/{clientId}/measurements | Measurement history |
 | GET | /api/clients/{clientId}/measurements/latest | Latest measurement |
 | POST | /api/clients/{clientId}/measurements | Add a measurement (BMI and deltas are calculated) |
@@ -126,7 +127,7 @@ JWT_REFRESH_EXPIRATION=604800000
 
 ### Client Onboarding
 1. Dietitian creates a client profile via `POST /api/clients`
-2. Dietitian sends the client an invite token (invite endpoint and email delivery not built yet; see the roadmap)
+2. Dietitian creates an invite via `POST /api/clients/{id}/invite` and shares the returned `inviteToken` with the client (valid for 7 days; email delivery is not built yet)
 3. Client accepts invite via `POST /api/auth/client/accept-invite`
 4. Client logs in normally via `POST /api/auth/login`
 
