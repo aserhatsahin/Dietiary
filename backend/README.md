@@ -105,6 +105,11 @@ All endpoints except `/api/auth/**` need an `Authorization: Bearer <token>` head
 
 | Method | Endpoint | Description |
 |---|---|---|
+| GET | /api/mobile/me | My profile |
+| GET | /api/mobile/measurements | My measurements (newest first) |
+| GET | /api/mobile/measurements/latest | My latest measurement |
+| GET | /api/mobile/goal | My current goal |
+| GET | /api/mobile/progress | My progress (`fromDate`/`toDate` optional, default last 30 days) |
 | GET | /api/mobile/tracking/daily | Today's plan with tracking state |
 | POST | /api/mobile/tracking/meals | Log the alternative eaten for a meal |
 | POST | /api/mobile/tracking/water | Log water intake |

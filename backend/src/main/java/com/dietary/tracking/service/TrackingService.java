@@ -162,6 +162,9 @@ public class TrackingService {
 
     @Transactional(readOnly = true)
     public ProgressDTO getProgress(UUID clientId, UUID dietitianId, LocalDate fromDate, LocalDate toDate) {
+        if (fromDate.isAfter(toDate)) {
+            throw new BadRequestException("fromDate must be on or before toDate");
+        }
         // Validate client belongs to dietitian
         clientRepository.findByIdAndDietitianId(clientId, dietitianId)
                 .orElseThrow(() -> new ResourceNotFoundException("Client", "id", clientId));

@@ -8,8 +8,8 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.postgresql.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -23,15 +23,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Boots the whole app against a real PostgreSQL in Docker. Flyway creates the schema
  * and Hibernate validates it, so a migration that drifts from the entities fails here.
  * Skipped when Docker is not available.
+ *
+ * <p>One container is shared by every test class for the whole run. A per-class container would be
+ * stopped after the first class while Spring keeps reusing the cached context that points at it.
+ * Testcontainers' Ryuk sidecar removes the container when the JVM exits.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers(disabledWithoutDocker = true)
 public abstract class IntegrationTestBase {
 
-    @Container
     @ServiceConnection
     static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:18");
+
+    static {
+        if (DockerClientFactory.instance().isDockerAvailable()) {
+            POSTGRES.start();
+        }
+    }
 
     protected static final String PASSWORD = "Integration-test-pw1";
 
@@ -93,6 +102,15 @@ public abstract class IntegrationTestBase {
                 "category", category))
                 .andExpect(status().isCreated());
         return read(result, "$.data.id");
+    }
+
+    /** Invites the client, accepts the invite and returns the client's access token. */
+    protected String onboardClient(String dietitianToken, String clientId) throws Exception {
+        String inviteToken = read(post("/api/clients/" + clientId + "/invite", dietitianToken, null)
+                .andExpect(status().isCreated()), "$.data.inviteToken");
+        return read(post("/api/auth/client/accept-invite", null,
+                Map.of("inviteToken", inviteToken, "password", PASSWORD))
+                .andExpect(status().isCreated()), "$.data.accessToken");
     }
 
     /** Creates a client for the dietitian and returns the client id. */

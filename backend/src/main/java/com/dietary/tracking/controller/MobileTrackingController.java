@@ -1,5 +1,6 @@
 package com.dietary.tracking.controller;
 
+import com.dietary.client.service.ClientContextService;
 import com.dietary.common.dto.ApiResponse;
 import com.dietary.common.security.CurrentUser;
 import com.dietary.common.security.UserPrincipal;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class MobileTrackingController {
 
     private final TrackingService trackingService;
+    private final ClientContextService clientContextService;
 
     @GetMapping("/daily")
     @PreAuthorize("hasRole('CLIENT')")
@@ -34,7 +36,7 @@ public class MobileTrackingController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @CurrentUser UserPrincipal currentUser) {
         LocalDate targetDate = date != null ? date : LocalDate.now();
-        DailyPlanDTO plan = trackingService.getDailyPlan(currentUser.getClientId(), targetDate);
+        DailyPlanDTO plan = trackingService.getDailyPlan(clientContextService.require(currentUser).clientId(), targetDate);
         return ResponseEntity.ok(ApiResponse.success(plan));
     }
 
@@ -44,7 +46,7 @@ public class MobileTrackingController {
     public ResponseEntity<ApiResponse<DailyMealDTO>> trackMeal(
             @Valid @RequestBody TrackMealRequest request,
             @CurrentUser UserPrincipal currentUser) {
-        DailyMealDTO result = trackingService.trackMeal(currentUser.getClientId(), request);
+        DailyMealDTO result = trackingService.trackMeal(clientContextService.require(currentUser).clientId(), request);
         return ResponseEntity.ok(ApiResponse.success("Meal tracked successfully", result));
     }
 
@@ -54,7 +56,7 @@ public class MobileTrackingController {
     public ResponseEntity<ApiResponse<Integer>> trackWater(
             @Valid @RequestBody TrackWaterRequest request,
             @CurrentUser UserPrincipal currentUser) {
-        Integer totalWater = trackingService.trackWater(currentUser.getClientId(), request);
+        Integer totalWater = trackingService.trackWater(clientContextService.require(currentUser).clientId(), request);
         return ResponseEntity.ok(ApiResponse.success("Water tracked successfully", totalWater));
     }
 }
