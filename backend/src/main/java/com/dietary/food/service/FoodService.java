@@ -27,7 +27,9 @@ public class FoodService {
 
     @Transactional(readOnly = true)
     public List<FoodDTO> searchFoods(UUID dietitianId, String query, String category, FoodSource source) {
-        return foodRepository.searchFoods(dietitianId, query, category, source).stream()
+        String q = query == null ? "" : query.trim();
+        String c = category == null ? "" : category.trim();
+        return foodRepository.searchFoods(dietitianId, q, c, source).stream()
                 .map(FoodDTO::fromEntity)
                 .collect(Collectors.toList());
     }

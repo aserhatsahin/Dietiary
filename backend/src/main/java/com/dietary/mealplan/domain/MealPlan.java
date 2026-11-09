@@ -30,8 +30,8 @@ public class MealPlan {
     private User dietitian;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
+    @JoinColumn(name = "client_id")
+    private Client client; // null for templates
 
     @Column(nullable = false)
     private String name;

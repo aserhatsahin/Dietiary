@@ -1,7 +1,10 @@
 package com.dietary.auth.service;
 
+import com.dietary.auth.domain.Role;
 import com.dietary.auth.domain.User;
 import com.dietary.auth.repository.UserRepository;
+import com.dietary.client.domain.Client;
+import com.dietary.client.repository.ClientRepository;
 import com.dietary.common.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +20,7 @@ import java.util.UUID;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -34,6 +38,13 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + usernameOrId));
         }
 
-        return UserPrincipal.create(user);
+        // CLIENT users carry their client record id; the mobile endpoints read it from the principal.
+        UUID clientId = null;
+        if (user.getRole() == Role.CLIENT) {
+            clientId = clientRepository.findByUserId(user.getId())
+                    .map(Client::getId)
+                    .orElse(null);
+        }
+        return UserPrincipal.create(user, clientId);
     }
 }
