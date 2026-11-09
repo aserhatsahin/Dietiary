@@ -4,9 +4,9 @@ Spring Boot REST API for the Dietary dietitian-client management platform.
 
 ## Requirements
 
-- **Java 17+** (required for Spring Boot 3.x)
+- **Java 17+** (required for Spring Boot 4.x)
 - **Docker** (runs PostgreSQL via the root `docker-compose.yml`)
-- Gradle is not needed; the wrapper (Gradle 8.5) is included
+- Gradle is not needed; the wrapper (Gradle 9.9) is included
 
 ## Setup
 

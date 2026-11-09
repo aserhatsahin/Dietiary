@@ -4,7 +4,7 @@ This file tracks where the project stands and what comes next.
 
 ## Decisions
 
-- **Backend:** keep building on the existing Spring Boot 3.2 / Java 17 / PostgreSQL code. We are not rewriting it.
+- **Backend:** keep building on the existing Spring Boot / Java 17 / PostgreSQL code. We are not rewriting it.
 - **Dietitian web panel:** React 18 + TypeScript, Vite, TailwindCSS, TanStack Query and Recharts.
 - **Client mobile app:** Kotlin Multiplatform with Compose Multiplatform, targeting Android and iOS from one codebase.
 
@@ -22,7 +22,7 @@ The plan puts something people can try online first: a deployed API and web pane
 | mealplan | templates, get, create, update, activate, client's active plan | delete |
 | tracking | client: daily plan, track meal, track water; dietitian: progress | client-side endpoints for own profile, measurements and goal |
 
-Cross-cutting gaps: no Dockerfile, no production config from environment variables. Spring Boot 3.2 is out of support, and its Flyway 9 has not been tested with PostgreSQL 18.
+Cross-cutting gaps: no Dockerfile, no production config from environment variables.
 
 ## Phase 0: Build and docs hygiene
 
@@ -41,7 +41,7 @@ Cross-cutting gaps: no Dockerfile, no production config from environment variabl
 - [ ] Client-facing endpoints under `/api/mobile`: me, my measurements, my goal, my progress
 - [ ] Missing CRUD: measurement update/delete, meal plan delete, goal history
 - [ ] Production config from environment variables, plus a Dockerfile
-- [ ] Upgrade Spring Boot 3.2 → 3.5 (newer Flyway, Testcontainers and security fixes)
+- [x] Upgrade Spring Boot 3.2 → 4.1 (3.x is out of support), Gradle 8.5 → 9.9
 
 ## Phase 2: Public demo API
 
