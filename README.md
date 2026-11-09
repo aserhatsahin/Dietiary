@@ -5,6 +5,10 @@ Dietary is a SaaS platform that digitizes the dietitian–client workflow. Dieti
 
 The current scope targets a single dietitian account with multiple clients. The backend architecture remains multi-tenant ready by scoping all client data under a dietitian context.
 
+## Status
+
+Work in progress. The **backend API** is implemented and runnable. The **web panel** and **mobile app** have not been started yet. The [roadmap](docs/ROADMAP.md) lists what works, what is missing, and what comes next.
+
 ## Overview
 
 Dietary covers the full nutrition workflow:
@@ -25,20 +29,18 @@ The system is designed around real-world dietitian practices where meal plans pr
 - Gradle
 - OpenAPI / Swagger
 
-### Web Frontend (Dietitian Panel)
+### Web Frontend (Dietitian Panel) (planned)
 - React 18 + TypeScript
 - Vite
 - TailwindCSS
-- React Query (server state management)
-- Zustand (global client state)
+- TanStack Query (server state management)
 - Recharts (charts and analytics)
 
-### Mobile App (Client App)
-- React Native + Expo
-- React Navigation
-- Axios
-- AsyncStorage (offline cache)
-- Expo Notifications
+### Mobile App (Client App) (planned)
+- Kotlin Multiplatform + Compose Multiplatform (Android and iOS)
+- Ktor client + kotlinx.serialization
+- Koin (dependency injection)
+- Local cache for offline viewing
 
 
 ## Project Structure
@@ -46,8 +48,8 @@ The system is designed around real-world dietitian practices where meal plans pr
 
 dietary/
 ├── backend/          # Spring Boot API
-├── web/              # React web panel for dietitians
-└── mobile/           # React Native app for clients
+├── web/              # React web panel for dietitians (planned)
+└── mobile/           # Kotlin Multiplatform app for clients (planned)
 
 ## Backend Architecture
 
@@ -79,7 +81,6 @@ backend/src/main/java/com/dietary
 │   ├── controller/
 │   ├── service/
 │   ├── domain/
-│   ├── parser/          # PDF parsing (Tarti.com template)
 │   └── repository/
 ├── goal/
 │   ├── controller/
@@ -95,7 +96,6 @@ backend/src/main/java/com/dietary
 │   ├── controller/
 │   ├── service/
 │   ├── domain/
-│   ├── calculator/      # calorie and macro calculations
 │   └── repository/
 ├── tracking/
 │   ├── controller/
@@ -103,11 +103,10 @@ backend/src/main/java/com/dietary
 │   ├── domain/
 │   └── repository/
 └── common/
+├── config/
 ├── security/
 ├── exception/
-├── dto/
-├── mapper/
-└── util/
+└── dto/
 
 
 ## Core Domain Concepts
@@ -143,7 +142,7 @@ This model reflects real dietitian programs that offer flexible combinations rat
 - Client management (add, edit, list, soft delete)
 - Measurement tracking
   - Manual entry
-  - PDF upload and parsing (Tarti.com output for demo)
+  - PDF upload and parsing (Tarti.com output for demo) (planned)
   - Historical measurement tables and charts
 - Goal setting
   - BMR and TDEE calculation
@@ -207,81 +206,26 @@ Main entities:
 - WaterTracking
 
 
-## API Endpoints (Draft)
+## API Endpoints
 
-### Authentication
-- POST /api/auth/register
-- POST /api/auth/login
-- POST /api/auth/refresh
-
-### Clients
-- GET /api/clients
-- POST /api/clients
-- GET /api/clients/{id}
-- PUT /api/clients/{id}
-- DELETE /api/clients/{id}
-
-### Measurements
-- GET /api/clients/{id}/measurements
-- POST /api/clients/{id}/measurements
-- POST /api/clients/{id}/measurements/parse
-
-### Goals
-- POST /api/clients/{id}/goals
-- GET /api/clients/{id}/goals/current
-
-### Foods
-- GET /api/foods/search
-- POST /api/foods
-
-### Meal Plans
-- POST /api/meal-plans
-- PUT /api/meal-plans/{id}
-- POST /api/meal-plans/{id}/assign
-- GET /api/meal-plans/client/{clientId}/active
-
-### Mobile
-- GET /api/mobile/daily-plan
-- POST /api/mobile/select-meal-option
-- POST /api/mobile/track-meal
-- POST /api/mobile/track-water
-- GET /api/mobile/progress
-
-## Performance Targets
-
-- Page load time < 2 seconds
-- Typical API response < 500 ms
-- Mobile app launch < 3 seconds
+The full, up-to-date endpoint list is in [backend/README.md](backend/README.md#api-endpoints). With the app running, Swagger UI is at `http://localhost:8081/swagger-ui.html`.
 
 ## Development Setup
 
 Requirements:
 - Java 17+
-- Node.js 20+
-- PostgreSQL 15+
-- Git
+- Docker (for PostgreSQL)
 
-Backend:
 ```bash
+# Start PostgreSQL
+docker compose up -d
+
+# Run the backend with the dev profile (http://localhost:8081)
 cd backend
-./gradlew bootRun
-````
-
-Web:
-
-```bash
-cd web
-npm install
-npm run dev
+./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
 
-Mobile:
-
-```bash
-cd mobile
-npm install
-npx expo start
-```
+Setup steps for the web panel and mobile app will be added once those apps exist.
 
 ---
 
