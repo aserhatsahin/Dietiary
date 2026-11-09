@@ -11,9 +11,10 @@ spring:
     driver-class-name: org.postgresql.Driver
   
   # JPA - Development
+  # The schema comes from Flyway (src/main/resources/db/migration); Hibernate only checks it.
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
 
 # Logging - Development

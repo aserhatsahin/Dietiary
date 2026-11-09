@@ -2,7 +2,7 @@ package com.dietary.measurement.controller.dto;
 
 import com.dietary.measurement.domain.EntryMethod;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class MeasurementRequest {
 
     @NotNull(message = "Measurement date is required")
-    @Past(message = "Measurement date must be in the past or today")
+    @PastOrPresent(message = "Measurement date must be in the past or today")
     private LocalDate measurementDate;
 
     @NotNull(message = "Weight is required")

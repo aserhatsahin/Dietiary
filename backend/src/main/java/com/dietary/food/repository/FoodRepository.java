@@ -12,10 +12,14 @@ import java.util.UUID;
 @Repository
 public interface FoodRepository extends JpaRepository<Food, UUID> {
 
+    /**
+     * Pass "" (not null) for query/category to skip that filter: PostgreSQL sends a null
+     * string parameter as bytea, and LOWER(bytea) fails. FoodService does this normalization.
+     */
     @Query("SELECT f FROM Food f WHERE f.active = true AND " +
             "(f.source = 'SYSTEM' OR f.dietitian.id = :dietitianId) AND " +
-            "(:query IS NULL OR LOWER(f.name) LIKE LOWER(CONCAT('%', :query, '%'))) AND " +
-            "(:category IS NULL OR LOWER(f.category) = LOWER(:category)) AND " +
+            "(:query = '' OR LOWER(f.name) LIKE LOWER(CONCAT('%', :query, '%'))) AND " +
+            "(:category = '' OR LOWER(f.category) = LOWER(:category)) AND " +
             "(:source IS NULL OR f.source = :source) " +
             "ORDER BY f.name")
     List<Food> searchFoods(UUID dietitianId, String query, String category, FoodSource source);

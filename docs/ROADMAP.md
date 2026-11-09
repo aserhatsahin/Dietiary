@@ -22,7 +22,7 @@ The plan puts something people can try online first: a deployed API and web pane
 | mealplan | templates, get, create, update, activate, client's active plan | delete |
 | tracking | client: daily plan, track meal, track water; dietitian: progress | client-side endpoints for own profile, measurements and goal |
 
-Cross-cutting gaps: only a few unit tests, no DB migrations (only the `dev` profile can start because the default profile uses `ddl-auto: validate`), no Dockerfile.
+Cross-cutting gaps: no Dockerfile, no production config from environment variables. Spring Boot 3.2 is out of support, and its Flyway 9 has not been tested with PostgreSQL 18.
 
 ## Phase 0: Build and docs hygiene
 
@@ -34,12 +34,14 @@ Cross-cutting gaps: only a few unit tests, no DB migrations (only the `dev` prof
 
 - [x] Invite flow: `POST /api/clients/{id}/invite` creates or regenerates a `ClientInvite` and returns the token (email delivery later)
 - [x] Return 403 (not 500) when a role is not allowed
-- [ ] Flyway migrations for the whole schema; `validate` in every profile
-- [ ] Integration tests with Testcontainers (auth, client isolation between dietitians, meal plan, tracking)
+- [x] Flyway migrations for the whole schema; `validate` in every profile
+- [x] Integration tests with Testcontainers (auth, client isolation between dietitians, meal plan, tracking)
+- [x] Bugs found by the integration tests: client logins had no `clientId` (every mobile endpoint failed), food search failed unless both filters were given, meal plan templates could not be saved, today's date was rejected for measurements, malformed requests returned 500
 - [x] GitHub Actions: build and test on every PR
 - [ ] Client-facing endpoints under `/api/mobile`: me, my measurements, my goal, my progress
 - [ ] Missing CRUD: measurement update/delete, meal plan delete, goal history
 - [ ] Production config from environment variables, plus a Dockerfile
+- [ ] Upgrade Spring Boot 3.2 → 3.5 (newer Flyway, Testcontainers and security fixes)
 
 ## Phase 2: Public demo API
 
