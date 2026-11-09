@@ -1,6 +1,8 @@
 
 # Dietary – Dietitian–Client Management Platform
 
+[![Backend CI](https://github.com/aserhatsahin/Dietiary/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/aserhatsahin/Dietiary/actions/workflows/backend-ci.yml)
+
 Dietary is a SaaS platform that digitizes the dietitian–client workflow. Dietitians manage clients, track body measurements, set goals, and create flexible meal plans through a web panel. Clients follow their daily nutrition plans via a mobile application with meal selection, tracking, progress visualization, and notifications.
 
 The current scope targets a single dietitian account with multiple clients. The backend architecture remains multi-tenant ready by scoping all client data under a dietitian context.
