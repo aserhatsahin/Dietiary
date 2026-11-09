@@ -20,7 +20,7 @@ The plan puts something people can try online first: a deployed API and web pane
 | goal | current goal, create (BMR/TDEE/calorie target) | goal history |
 | food | search, categories, create, seed data | none |
 | mealplan | templates, get, create, update, activate, client's active plan | delete |
-| tracking | client: daily plan, track meal, track water; dietitian: progress | client-side endpoints for own profile, measurements and goal |
+| tracking | client: daily plan, track meal, track water, own profile/measurements/goal/progress; dietitian: progress | none |
 
 Cross-cutting gaps: no Dockerfile, no production config from environment variables.
 
@@ -38,7 +38,7 @@ Cross-cutting gaps: no Dockerfile, no production config from environment variabl
 - [x] Integration tests with Testcontainers (auth, client isolation between dietitians, meal plan, tracking)
 - [x] Bugs found by the integration tests: client logins had no `clientId` (every mobile endpoint failed), food search failed unless both filters were given, meal plan templates could not be saved, today's date was rejected for measurements, malformed requests returned 500
 - [x] GitHub Actions: build and test on every PR
-- [ ] Client-facing endpoints under `/api/mobile`: me, my measurements, my goal, my progress
+- [x] Client-facing endpoints under `/api/mobile`: me, my measurements, my goal, my progress
 - [ ] Missing CRUD: measurement update/delete, meal plan delete, goal history
 - [ ] Production config from environment variables, plus a Dockerfile
 - [x] Upgrade Spring Boot 3.2 → 4.1 (3.x is out of support), Gradle 8.5 → 9.9
