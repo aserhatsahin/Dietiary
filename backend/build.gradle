@@ -30,6 +30,7 @@ dependencies {
     
     // Database
     runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
     
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
@@ -49,7 +50,13 @@ dependencies {
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
 }
+
+// Boot 3.2 ships Testcontainers 1.19.3, which cannot talk to Docker Engine 29+ (minimum API 1.44).
+ext['testcontainers.version'] = '1.21.4'
 
 tasks.named('test') {
     useJUnitPlatform()

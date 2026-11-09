@@ -32,7 +32,28 @@ This starts PostgreSQL on `localhost:5432` with database `dietiary_dev`, user `d
 ./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
 
-The `dev` profile runs on `http://localhost:8081` and lets Hibernate create the schema (`ddl-auto: update`). The default profile uses `ddl-auto: validate` and needs an existing schema. Database migrations are on the [roadmap](../docs/ROADMAP.md).
+The `dev` profile runs on `http://localhost:8081` and seeds a list of common foods.
+
+### Database migrations
+
+[Flyway](https://flywaydb.org/) creates and updates the schema from `src/main/resources/db/migration` on startup. Hibernate only validates it (`ddl-auto: validate`). To change the schema, add a new file such as `V2__add_something.sql`; never edit a migration that has already been applied.
+
+If your local database was created before migrations existed (by Hibernate), reset it once:
+
+```bash
+docker compose down -v && docker compose up -d
+```
+
+## Tests
+
+```bash
+./gradlew test
+```
+
+- **Unit tests** (`*Test`) run anywhere.
+- **Integration tests** (`*IT`) start PostgreSQL 18 in Docker via [Testcontainers](https://testcontainers.com/), apply the Flyway migrations, and call the API over HTTP. They are skipped when Docker is not running.
+
+GitHub Actions runs all of them on every pull request.
 
 ## API Documentation
 
