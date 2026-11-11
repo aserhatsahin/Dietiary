@@ -1,3 +1,10 @@
+# Local development.
+#   docker compose up -d                  -> PostgreSQL only (run the backend with ./gradlew bootRun)
+#   docker compose --profile app up -d    -> PostgreSQL + the backend image on http://localhost:8080
+#
+# If port 5432 is already taken (e.g. by a PostgreSQL installed on the machine), set
+# POSTGRES_PORT=5433 in your shell or a .env file; the dev profile reads the same variable.
+
 services:
   postgres:
     image: postgres:18
@@ -8,7 +15,7 @@ services:
       POSTGRES_USER: dietiary
       POSTGRES_PASSWORD: dietiary123!
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - dietiary_pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -16,6 +23,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  app:
+    profiles: ["app"]
+    build: ./backend
+    image: dietiary-backend:local
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dietiary_dev
+      SPRING_DATASOURCE_USERNAME: dietiary
+      SPRING_DATASOURCE_PASSWORD: dietiary123!
+      # Local only. A real deployment must set its own secret (openssl rand -base64 48).
+      JWT_SECRET: ${JWT_SECRET:-local-compose-secret-not-for-production-0123456789}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   dietiary_pgdata:

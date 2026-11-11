@@ -227,6 +227,14 @@ cd backend
 ./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
 
+Or run the backend's Docker image together with PostgreSQL (http://localhost:8080):
+
+```bash
+docker compose --profile app up -d --build
+```
+
+If port 5432 is already in use on your machine, set `POSTGRES_PORT=5433` first. Production configuration (environment variables) is described in [backend/README.md](backend/README.md#configuration).
+
 Setup steps for the web panel and mobile app will be added once those apps exist.
 
 ---

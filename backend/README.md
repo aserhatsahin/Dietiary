@@ -20,6 +20,13 @@ docker compose up -d
 
 This starts PostgreSQL on `localhost:5432` with database `dietiary_dev`, user `dietiary`. These match `src/main/resources/application-dev.yml`.
 
+If port 5432 is already in use (for example by a PostgreSQL installed on your machine), pick another port. The `dev` profile reads the same variable:
+
+```bash
+export POSTGRES_PORT=5433
+docker compose up -d
+```
+
 ### 2. Build
 
 ```bash
@@ -136,18 +143,34 @@ backend/src/main/java/com/dietary/
 
 Each module follows `controller/` (+ `dto/`), `service/`, `domain/`, `repository/`.
 
-## Environment Variables (Production)
+## Configuration
 
-Today only `JWT_SECRET` is read from the environment. Reading the database settings from the environment is on the roadmap. The planned variables are:
+The base configuration (`application.yml`) is the production one. It reads everything environment-specific from environment variables. The `dev` and `test` profiles add local values on top.
+
+| Variable | Required | Default | What it is |
+|---|---|---|---|
+| `SPRING_DATASOURCE_URL` | yes | none | JDBC URL, e.g. `jdbc:postgresql://host:5432/dietiary` |
+| `SPRING_DATASOURCE_USERNAME` | yes | none | Database user |
+| `SPRING_DATASOURCE_PASSWORD` | yes | none | Database password |
+| `JWT_SECRET` | yes | none | Token signing key, at least 32 bytes: `openssl rand -base64 48`. The app refuses to start without it. |
+| `CORS_ALLOWED_ORIGINS` | no | `http://localhost:5173,http://localhost:3000` | Comma-separated origins of the web panel |
+| `PORT` | no | `8080` | HTTP port (many hosting platforms set this) |
+| `SPRINGDOC_API_DOCS_ENABLED`, `SPRINGDOC_SWAGGER_UI_ENABLED` | no | `true` | Set to `false` to hide the API docs |
+
+Health checks: `GET /actuator/health`, plus `/actuator/health/liveness` and `/actuator/health/readiness`. No other Actuator endpoints are exposed.
+
+## Docker
+
+`backend/Dockerfile` is a multi-stage build. The final image has only a JRE and the app's layers, and it runs as a non-root user.
+
+Run the image locally together with PostgreSQL, from the repository root:
 
 ```bash
-DATABASE_URL=jdbc:postgresql://host:5432/dietary
-DATABASE_USERNAME=your_user
-DATABASE_PASSWORD=your_password
-JWT_SECRET=your-256-bit-secret-key
-JWT_ACCESS_EXPIRATION=900000
-JWT_REFRESH_EXPIRATION=604800000
+docker compose --profile app up -d --build
+curl http://localhost:8080/actuator/health
 ```
+
+CI builds the same image on every PR, starts it with PostgreSQL, waits for the health check, and then makes a real API call.
 
 ## Authentication Flow
 
