@@ -53,10 +53,16 @@ Cross-cutting gaps: startup is slow on a 0.1 CPU instance (about 2 minutes even 
 - [x] Fit the 512 MB / 0.1 CPU free instance: JVM flags, CDS archive, keep-warm workflow
 - [x] Create the Neon project and the Render service: https://dietiary-api.onrender.com
 - [x] Public demo and Swagger UI links in the README
-- [ ] Update the GitHub repo description to mention the live demo
+- [x] Update the GitHub repo description to mention the live demo
 
 ## Phase 3: Dietitian web panel (`web/`)
 
+Design first, with the impeccable, unslop and hallmark skills. The visual system is in [DESIGN.md](../DESIGN.md) and the product context in [PRODUCT.md](../PRODUCT.md).
+
+- [x] Product context (PRODUCT.md) and visual world: a Nutrition Facts label (chosen on impeccable's decision page)
+- [x] Client overview prototype, EN/TR: [docs/design/prototype.html](design/prototype.html). It passed impeccable's finish review, then DESIGN.md was written from it
+- [ ] Interactive meal plan builder prototype in the same world
+- [ ] Backend: store fat mass, edema (ECW/TBW) and circumferences (waist, hip, neck...) so the panel can show the full body analysis; the prototype shows them as marked sample values
 - [ ] Vite + React + TS scaffold, typed API client generated from OpenAPI
 - [ ] Login, token refresh, protected routes
 - [ ] Client list and detail pages, invite button

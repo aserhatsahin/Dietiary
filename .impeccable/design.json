@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-11T00:00:00Z",
+  "title": "Design System: Dietiary",
+  "extensions": {
+    "colorMeta": {
+      "ink":       { "role": "primary",   "displayName": "Label Ink",     "canonical": "#0b0b0b", "tonalRamp": ["#0b0b0b", "#1f1f1f", "#363636", "#4f4f4f", "#6b6b6b", "#8f8f8f", "#bdbdbd", "#ebebeb"] },
+      "ink-hover": { "role": "primary",   "displayName": "Pressed Ink",   "canonical": "#2a2a2a", "tonalRamp": ["#0b0b0b", "#1f1f1f", "#2a2a2a", "#4f4f4f", "#6b6b6b", "#8f8f8f", "#bdbdbd", "#ebebeb"] },
+      "toward":    { "role": "secondary", "displayName": "Toward Green",  "canonical": "#1a7f37", "tonalRamp": ["#0b2e15", "#114a22", "#1a7f37", "#2f9a4e", "#5cb874", "#93d3a2", "#c6ead0", "#ecf8ef"] },
+      "against":   { "role": "secondary", "displayName": "Against Red",   "canonical": "#b42318", "tonalRamp": ["#3d0c08", "#6b1610", "#b42318", "#d1453a", "#e3786f", "#f0a9a3", "#f8d5d2", "#fdf0ef"] },
+      "paper":     { "role": "neutral",   "displayName": "Label Paper",   "canonical": "#ffffff", "tonalRamp": ["#1a1a1a", "#3a3a3a", "#5e5e5e", "#8a8a8a", "#b5b5b5", "#dadada", "#ededed", "#ffffff"] },
+      "ground":    { "role": "neutral",   "displayName": "Counter Grey",  "canonical": "#ededed", "tonalRamp": ["#1a1a1a", "#3a3a3a", "#5e5e5e", "#8a8a8a", "#b5b5b5", "#dadada", "#ededed", "#f7f7f7"] },
+      "mute":      { "role": "neutral",   "displayName": "Unit Grey",     "canonical": "#555555", "tonalRamp": ["#1a1a1a", "#3a3a3a", "#555555", "#717171", "#8a8a8a", "#b5b5b5", "#dadada", "#f2f2f2"] },
+      "faint":     { "role": "neutral",   "displayName": "Pencil Grey",   "canonical": "#8a8a8a", "tonalRamp": ["#1a1a1a", "#3a3a3a", "#555555", "#717171", "#8a8a8a", "#b5b5b5", "#dadada", "#f2f2f2"] }
+    },
+    "typographyMeta": {
+      "display":     { "displayName": "Display",     "purpose": "The client's name, once per screen. 30px under 820px." },
+      "headline":    { "displayName": "Headline",    "purpose": "The primary facts label's title. 26px under 820px." },
+      "title":       { "displayName": "Title",       "purpose": "Secondary label titles and the wordmark (-0.02em)." },
+      "figure-lead": { "displayName": "Figure Lead", "purpose": "Lead row of a facts label. 17px under 820px; key-value lead row uses 18px." },
+      "body":        { "displayName": "Body",        "purpose": "Line items, nav, tabs; base size of the system." },
+      "body-strong": { "displayName": "Body Strong", "purpose": "Key-value values, buttons, emphasised facts." },
+      "aside":       { "displayName": "Aside",       "purpose": "Label-head notes, sub-lines, account block, toggle." },
+      "label":       { "displayName": "Label",       "purpose": "Column heads, table heads, weekday heads." },
+      "footnote":    { "displayName": "Footnote",    "purpose": "Sample-data footnotes and legends in Unit Grey; chart axes drop to 11px." }
+    },
+    "rules": [
+      { "name": "rule-10", "value": "10px solid #0b0b0b", "purpose": "The one headline break in the primary facts label, and under the wordmark (5px on mobile)." },
+      { "name": "rule-5",  "value": "5px solid #0b0b0b",  "purpose": "Closes a label head and the lead row; selected-tab underline." },
+      { "name": "rule-3",  "value": "3px solid #0b0b0b",  "purpose": "Section breaks: column heads, section rows, client header, rail edge." },
+      { "name": "rule-1",  "value": "1px solid #0b0b0b",  "purpose": "Between line items; the frame of every label." },
+      { "name": "control-stroke", "value": "2px solid #0b0b0b", "purpose": "Buttons, segmented toggle, focus outline (2px offset). Not part of the rule ranking." }
+    ],
+    "shadows": [],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Standard easing for every transition." },
+      { "name": "hover-wash", "value": "160ms", "purpose": "Background and colour change on buttons and nav links (120ms on table rows)." },
+      { "name": "panel-settle", "value": "260ms; opacity 0.4 to 1, translateY 4px to 0", "purpose": "Tab panel entrance. Disabled under prefers-reduced-motion, as are all transitions." }
+    ],
+    "breakpoints": [
+      { "name": "stack", "value": "1100px", "purpose": "Overview labels stack into one column in reading priority." },
+      { "name": "compact", "value": "820px", "purpose": "Rail becomes a top bar; type and numeric columns tighten." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single main action of a header, e.g. Add measurement.",
+      "html": "<button class=\"ds-btn ds-btn-primary\" type=\"button\">Add measurement</button>",
+      "css": ".ds-btn { font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 700; border: 2px solid #0b0b0b; border-radius: 0; padding: 8px 16px; background: #ffffff; color: #0b0b0b; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16,1,0.3,1), color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary { background: #0b0b0b; color: #ffffff; } .ds-btn-primary:hover { background: #2a2a2a; } .ds-btn:active { transform: translateY(1px); } .ds-btn:focus-visible { outline: 2px solid #0b0b0b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Any other action: paper face, ink stroke.",
+      "html": "<button class=\"ds-btn-sec\" type=\"button\">Edit client</button>",
+      "css": ".ds-btn-sec { font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 700; border: 2px solid #0b0b0b; border-radius: 0; padding: 8px 16px; background: #ffffff; color: #0b0b0b; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-sec:hover { background: #ededed; } .ds-btn-sec:active { transform: translateY(1px); } .ds-btn-sec:focus-visible { outline: 2px solid #0b0b0b; outline-offset: 2px; } .ds-btn-sec:disabled { border-style: dashed; border-color: #555555; color: #555555; cursor: not-allowed; transform: none; }"
+    },
+    {
+      "name": "Facts Label",
+      "kind": "card",
+      "refersTo": "label",
+      "description": "The signature container: paper, 1px frame, ranked rules, tabular rows with goal-direction change.",
+      "html": "<section class=\"ds-label\"><h2 class=\"ds-label-h\">Measurement facts</h2><div class=\"ds-label-sub\">11 November 2026 · scale and tape</div><div class=\"ds-row ds-row-head\"><span></span><span>This visit</span><span>Previous</span><span>Change</span></div><div class=\"ds-row ds-row-big\"><span>Weight</span><span>74.1 <span class=\"ds-unit\">kg</span></span><span>74.8 <span class=\"ds-unit\">kg</span></span><span class=\"ds-toward\">−0.7</span></div><div class=\"ds-row\"><span>Body water</span><span>50.6%</span><span>50.2%</span><span class=\"ds-toward\">+0.4</span></div><div class=\"ds-row ds-row-ind\"><span>Edema<sup class=\"ds-mark\">†</sup></span><span>0.386</span><span>0.382</span><span class=\"ds-against\">+0.004</span></div><div class=\"ds-foot\"><span class=\"ds-mark\">†</span> Sample value: the API does not store it yet.</div></section>",
+      "css": ".ds-label { font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.45; color: #0b0b0b; background: #ffffff; border: 1px solid #0b0b0b; padding: 12px 16px 16px; max-width: 520px; } .ds-label-h { margin: 0; font-weight: 900; font-size: 30px; line-height: 1.1; letter-spacing: -0.01em; padding-bottom: 4px; border-bottom: 1px solid #0b0b0b; } .ds-label-sub { font-size: 13px; padding: 4px 0 8px; border-bottom: 10px solid #0b0b0b; } .ds-row { display: grid; grid-template-columns: minmax(0,1fr) 76px 76px 68px; gap: 8px; padding: 4px 0; border-bottom: 1px solid #0b0b0b; font-variant-numeric: tabular-nums; } .ds-row > :not(:first-child) { text-align: right; white-space: nowrap; } .ds-row-head { font-weight: 700; font-size: 12px; border-bottom-width: 3px; } .ds-row-big { font-weight: 900; font-size: 20px; border-bottom-width: 5px; } .ds-row-big .ds-unit { font-size: 13px; } .ds-row-ind > :first-child { padding-left: 16px; } .ds-unit { color: #555555; font-weight: 400; } .ds-toward { color: #1a7f37; } .ds-against { color: #b42318; } .ds-mark { font-weight: 700; font-size: 0.8em; margin-left: 2px; line-height: 0; } .ds-foot { font-size: 12px; color: #555555; padding-top: 8px; }"
+    },
+    {
+      "name": "Key-Value Label",
+      "kind": "card",
+      "refersTo": "label",
+      "description": "Label variant for goal and plan figures: name left, bold value right.",
+      "html": "<section class=\"ds-kvl\"><div class=\"ds-kvl-head\"><h3>Goal and plan</h3><span>Lose 0.5 kg a week</span></div><div class=\"ds-kv ds-kv-big\"><span>Daily target</span><span>1,743 kcal</span></div><div class=\"ds-kv\"><span>Protein</span><b>131 g</b></div><div class=\"ds-kv\"><span>Active plan</span><a href=\"#\">Balanced 1600 kcal</a></div></section>",
+      "css": ".ds-kvl { font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.45; color: #0b0b0b; background: #ffffff; border: 1px solid #0b0b0b; padding: 12px 16px 16px; max-width: 420px; } .ds-kvl-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 8px; border-bottom: 5px solid #0b0b0b; } .ds-kvl-head h3 { margin: 0; font-weight: 900; font-size: 22px; line-height: 1.15; } .ds-kvl-head span { font-size: 13px; } .ds-kv { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; border-bottom: 1px solid #0b0b0b; font-variant-numeric: tabular-nums; } .ds-kv:last-child { border-bottom: 0; } .ds-kv-big { font-weight: 900; font-size: 18px; border-bottom-width: 3px; } .ds-kv b, .ds-kv a { font-weight: 700; color: inherit; } .ds-kv a { text-underline-offset: 3px; text-decoration-thickness: 1px; } .ds-kv a:focus-visible { outline: 2px solid #0b0b0b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Text tabs on a 1px rule; the selected tab is 900 with a 5px underline.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button role=\"tab\" aria-selected=\"true\">Overview</button><button role=\"tab\" aria-selected=\"false\">Measurements</button><button role=\"tab\" aria-selected=\"false\">Goals</button></div>",
+      "css": ".ds-tabs { display: flex; gap: 24px; border-bottom: 1px solid #0b0b0b; font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; } .ds-tabs button { font: inherit; border: 0; background: none; padding: 8px 0; font-weight: 400; color: #555555; border-bottom: 5px solid transparent; margin-bottom: -1px; cursor: pointer; } .ds-tabs button:hover { color: #0b0b0b; } .ds-tabs button[aria-selected=\"true\"] { color: #0b0b0b; font-weight: 900; border-bottom-color: #0b0b0b; } .ds-tabs button:focus-visible { outline: 2px solid #0b0b0b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Navigation Rail",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Paper rail: wordmark over the 10px rule, ruled link rows with counts.",
+      "html": "<aside class=\"ds-rail\"><div class=\"ds-logo\">Dietiary</div><nav><a href=\"#\" aria-current=\"page\"><span>Clients</span><span>3</span></a><a href=\"#\">Meal plans</a><a href=\"#\">Templates</a></nav></aside>",
+      "css": ".ds-rail { width: 220px; background: #ffffff; border-right: 3px solid #0b0b0b; padding: 24px 16px; font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #0b0b0b; } .ds-logo { font-weight: 900; font-size: 22px; letter-spacing: -0.02em; padding-bottom: 12px; border-bottom: 10px solid #0b0b0b; margin-bottom: 4px; } .ds-rail nav a { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #0b0b0b; text-decoration: none; color: inherit; font-variant-numeric: tabular-nums; transition: background-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-rail nav a:hover { background: #ededed; } .ds-rail nav a[aria-current=\"page\"] { font-weight: 900; } .ds-rail nav a:focus-visible { outline: 2px solid #0b0b0b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Segmented Toggle",
+      "kind": "chip",
+      "refersTo": "segmented-toggle",
+      "description": "EN/TR language switch: two square segments, pressed segment filled ink.",
+      "html": "<div class=\"ds-seg\" role=\"group\" aria-label=\"Language\"><button type=\"button\" aria-pressed=\"true\">EN</button><button type=\"button\" aria-pressed=\"false\">TR</button></div>",
+      "css": ".ds-seg { display: grid; grid-template-columns: 1fr 1fr; width: 188px; border: 2px solid #0b0b0b; font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif; } .ds-seg button { font: inherit; font-weight: 700; font-size: 13px; border: 0; background: #ffffff; color: #0b0b0b; padding: 8px 0; min-height: 36px; cursor: pointer; } .ds-seg button + button { border-left: 2px solid #0b0b0b; } .ds-seg button[aria-pressed=\"true\"] { background: #0b0b0b; color: #ffffff; } .ds-seg button:focus-visible { outline: 2px solid #0b0b0b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Adherence Grid",
+      "kind": "custom",
+      "refersTo": "label",
+      "description": "Meal by day matrix: ink cell eaten, outlined not logged, dashed grey later today.",
+      "html": "<div class=\"ds-grid\"><span></span><span class=\"ds-d\">Mon</span><span class=\"ds-d\">Tue</span><span class=\"ds-d ds-today\">Wed</span><span>Lunch</span><i class=\"ds-eaten\"></i><i></i><i class=\"ds-eaten\"></i><span>Dinner</span><i class=\"ds-eaten\"></i><i class=\"ds-eaten\"></i><i class=\"ds-upcoming\"></i></div>",
+      "css": ".ds-grid { display: grid; grid-template-columns: 96px repeat(3, minmax(0,1fr)); gap: 4px; align-items: center; font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: #0b0b0b; max-width: 360px; background: #ffffff; } .ds-d { text-align: center; font-weight: 700; } .ds-today { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; } .ds-grid i { display: block; height: 24px; border: 1px solid #0b0b0b; } .ds-grid i.ds-eaten { background: #0b0b0b; } .ds-grid i.ds-upcoming { border-style: dashed; border-color: #8a8a8a; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Nutrition Facts Label",
+    "overview": "Every surface is a printed label: white paper laid on a neutral grey counter, framed by a hairline and ranked from inside by black rules of four weights. The heaviest rule says \"this is the headline fact\"; the thinnest separates one line item from the next. Hierarchy comes from rule weight and type weight, never from colour blocks, card elevation or icons. The result reads as a document a dietitian can hold up to a client, not a dashboard.\n\nDensity is high and calm. Rows are tight (4px to 8px vertical padding), figures are tabular and right-aligned, units sit in muted grey beside the number, and indented sub-rows (fat mass under body fat) carry the label's own nesting. Colour is withheld almost entirely: ink on paper, with exactly two semantic hues that answer one question, \"did this move toward the client's goal or away from it?\"\n\nThe system is bilingual by construction. Every figure passes through locale formatting (English: `74.1`, `30.1%`; Turkish: `74,1`, `%30,1`, dot thousands separator), so layouts must survive both string lengths and both number shapes.",
+    "keyCharacteristics": [
+      "White paper labels on a light grey ground; one hairline frame per label.",
+      "Four ranked ink rules (10, 5, 3, 1px) carry all hierarchy inside a label.",
+      "One heavy grotesk (Libre Franklin 400/700/900) with tabular figures everywhere numbers appear.",
+      "Square corners, no shadows, no gradients, no icons.",
+      "Green and red are reserved for goal direction; nothing else is coloured."
+    ],
+    "rules": [
+      { "name": "The Goal Direction Rule", "body": "Green and red mean \"toward the client's goal\" and \"against it\", decided per metric from the goal, not from the sign of the number. A loss is green for a client losing weight and red for one gaining. A metric with no goal direction (basal metabolic rate) and a zero change stay in ink.", "section": "colors" },
+      { "name": "The Two Hues Rule", "body": "Toward Green and Against Red are the only chromatic colours in the system and appear only as text on change values. No coloured fills, badges, borders, links or brand accents.", "section": "colors" },
+      { "name": "The Tabular Figures Rule", "body": "Every number that can sit above or beside another number uses tabular figures (`font-variant-numeric: tabular-nums`) and right alignment, so columns of values line up by digit in both locales.", "section": "typography" },
+      { "name": "The Weight Not Size Rule", "body": "Hierarchy inside a label is made with 900 vs 700 vs 400 and with rule weight. Sizes stay in the 12 to 22px band inside labels; only the client name and the primary label title go larger.", "section": "typography" },
+      { "name": "The Ranked Rules Rule", "body": "Rules carry hierarchy at four weights. 10px marks the one headline break in a screen's primary facts label (under its sub-line) and the wordmark, nothing else. 5px closes a label head and the lead row, and underlines the selected tab. 3px separates sections: column heads, section rows (Circumferences, Calculated), the client header, the rail. 1px separates line items and frames each label. Controls use a separate 2px stroke that is not part of the rule ranking.", "section": "elevation" },
+      { "name": "The Paper Not Cards Rule", "body": "Containers are labels: white, 1px ink frame, square. Never a shadowed or tinted card.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do put every group of numbers inside a paper label with a 1px ink frame and rank it with the 10/5/3/1px rules.",
+      "Do show each value next to its previous value and colour only the change, Toward Green or Against Red, by the client's goal direction.",
+      "Do use tabular figures and right alignment for every numeric column, and format numbers per locale (Turkish decimal comma, dot thousands separator, leading % sign).",
+      "Do keep units in Unit Grey at 400 beside the figure.",
+      "Do mark not-yet-stored or sample values with a bold dagger and a Unit Grey footnote in the same label.",
+      "Do use ink as the only fill for state (primary button, pressed toggle, eaten cell) and Counter Grey as the only hover wash."
+    ],
+    "donts": [
+      "Don't use rounded corners, shadows, gradients or tinted cards.",
+      "Don't use the 10px rule more than once in a label, or anywhere other than the primary facts label and the wordmark.",
+      "Don't use green or red for anything other than goal-direction change values: not for buttons, links, badges, status chips or backgrounds.",
+      "Don't colour a change by its sign; colour it by the goal.",
+      "Don't add icons; labels speak in words, rules and the dagger mark.",
+      "Don't introduce a second typeface; weight 900 / 700 / 400 of Libre Franklin covers display through footnote."
+    ]
+  }
+}
