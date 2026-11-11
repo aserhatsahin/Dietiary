@@ -45,7 +45,7 @@ The `dev` profile runs on `http://localhost:8081` and seeds a list of common foo
 
 [Flyway](https://flywaydb.org/) creates and updates the schema from `src/main/resources/db/migration` on startup. Hibernate only validates it (`ddl-auto: validate`). To change the schema, add a new file such as `V2__add_something.sql`; never edit a migration that has already been applied.
 
-If your local database was created before migrations existed (by Hibernate), reset it once:
+If your local database was created before migrations existed (by Hibernate), or before `docker-compose.yml` mounted the volume at `/var/lib/postgresql` (required by the PostgreSQL 18 image), reset it once:
 
 ```bash
 docker compose down -v && docker compose up -d

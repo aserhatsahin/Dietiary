@@ -17,7 +17,9 @@ services:
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
-      - dietiary_pgdata:/var/lib/postgresql/data
+      # PostgreSQL 18+ images keep data in a versioned subdirectory and refuse to start
+      # if the volume is mounted at the old /var/lib/postgresql/data path.
+      - dietiary_pgdata:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U dietiary -d dietiary_dev"]
       interval: 10s
