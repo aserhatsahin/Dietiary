@@ -267,3 +267,11 @@ Setup steps for the web panel and mobile app will be added once those apps exist
 * Barcode scanning
 * AI-driven meal suggestions
 
+
+## License
+
+Copyright (C) 2026 aserhatsahin
+
+Dietiary is free software: you can redistribute it and/or modify it under the terms of the [GNU Affero General Public License v3.0](LICENSE). If you run a modified version as a network service, the AGPL requires you to offer its source code to that service's users.
+
+Versions up to and including commit `0c7c2f3` were published under the MIT License.
