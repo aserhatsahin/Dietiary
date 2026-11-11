@@ -9,7 +9,12 @@ The current scope targets a single dietitian account with multiple clients. The 
 
 ## Live demo
 
-The API is deployed from `main` to a free Render instance (setup: [docs/DEPLOY.md](docs/DEPLOY.md)). The link and Swagger UI will be added here after the first deploy.
+- **API docs (Swagger UI):** https://dietiary-api.onrender.com/swagger-ui.html
+- **Health:** https://dietiary-api.onrender.com/actuator/health
+
+The API runs on a free Render instance with a Neon PostgreSQL database and deploys from `main` after CI passes (setup: [docs/DEPLOY.md](docs/DEPLOY.md)). If it has been asleep, the first request can take a few minutes.
+
+To try it in Swagger UI: call `POST /api/auth/login` with a demo account below, copy `accessToken` from the response, click **Authorize** and paste it.
 
 Demo accounts (shared and public, so other visitors may change the data):
 

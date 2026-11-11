@@ -51,8 +51,9 @@ Cross-cutting gaps: startup is slow on a 0.1 CPU instance (about 2 minutes even 
 - [x] System foods seeded by a Flyway migration, so every environment has them
 - [x] Demo dietitian account with sample clients, plans and tracking (`APP_DEMO_ENABLED`)
 - [x] Fit the 512 MB / 0.1 CPU free instance: JVM flags, CDS archive, keep-warm workflow
-- [ ] Create the Neon project and the Render service (one-time, by the repo owner)
-- [ ] Public demo and Swagger UI links in the README; update the GitHub repo description
+- [x] Create the Neon project and the Render service: https://dietiary-api.onrender.com
+- [x] Public demo and Swagger UI links in the README
+- [ ] Update the GitHub repo description to mention the live demo
 
 ## Phase 3: Dietitian web panel (`web/`)
 
