@@ -33,6 +33,16 @@ class PlatformIT extends IntegrationTestBase {
     }
 
     @Test
+    void apiDocsDescribeTheProjectAndItsLicense() throws Exception {
+        getAs("/api-docs", null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.info.title").value("Dietiary API"))
+                .andExpect(jsonPath("$.info.license.name").value("AGPL-3.0"))
+                .andExpect(jsonPath("$.info.contact.url").value("https://github.com/aserhatsahin/Dietiary"))
+                .andExpect(jsonPath("$.info.description", org.hamcrest.Matchers.containsString("demo@dietiary.app")));
+    }
+
+    @Test
     void otherActuatorEndpointsAreNotExposed() throws Exception {
         // Not exposed at all, so even an authenticated user would not find them
         getAs("/actuator/env", registerDietitian()).andExpect(status().isNotFound());

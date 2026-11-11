@@ -19,15 +19,22 @@ public class OpenApiConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("Dietary API")
-                        .description("REST API for the Dietary dietitian-client management platform")
+                        .title("Dietiary API")
+                        .description("""
+                                REST API for Dietiary, a platform that digitizes how dietitians work with their clients.
+
+                                **Try it:** call `POST /api/auth/login` with the public demo account \
+                                `{"email": "demo@dietiary.app", "password": "Dietiary-demo-2026"}`, \
+                                copy `accessToken` from the response, click **Authorize** and paste it. \
+                                The client account `elif.demo@dietiary.app` (same password) works for the `/api/mobile` endpoints.
+                                """)
                         .version("1.0.0")
                         .contact(new Contact()
-                                .name("Dietary Team")
-                                .email("support@dietary.com"))
+                                .name("Source on GitHub")
+                                .url("https://github.com/aserhatsahin/Dietiary"))
                         .license(new License()
-                                .name("Private")
-                                .url("https://dietary.com")))
+                                .name("AGPL-3.0")
+                                .url("https://www.gnu.org/licenses/agpl-3.0.html")))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
                         .addSecuritySchemes(securitySchemeName,
