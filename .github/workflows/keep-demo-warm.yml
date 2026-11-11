@@ -8,7 +8,9 @@ name: Keep demo warm
 # Off until the repository variable DEMO_API_URL is set (Settings > Secrets and variables >
 # Actions > Variables), e.g. https://dietiary-api.onrender.com
 #
-# GitHub pauses scheduled workflows in a public repo after 60 days without commits.
+# GitHub pauses scheduled workflows in a public repo after 60 days without commits, and it
+# does not guarantee when scheduled runs happen (they can be hours apart). This is the backup;
+# the primary keep-awake is an external monitor, see docs/DEPLOY.md section 4.
 
 on:
   schedule:

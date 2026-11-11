@@ -51,11 +51,22 @@ curl https://dietiary-api.onrender.com/actuator/health
 
 You should get `{"status":"UP"...}`. Then open `https://dietiary-api.onrender.com/swagger-ui.html` and log in with the demo account from the [README](../README.md#live-demo).
 
-## 4. Keep it awake (recommended)
+## 4. Keep it awake
 
-Free Render services stop after 15 minutes without traffic. Starting again takes 2–3 minutes, so a visitor would wait that long. The [`Keep demo warm`](../.github/workflows/keep-demo-warm.yml) workflow calls the health endpoint every 10 minutes. One always-on service fits within Render's 750 free hours a month.
+Free Render services stop after 15 minutes without traffic. Starting again takes 1–3 minutes, so a visitor would wait that long. A request to the health endpoint every 10 minutes keeps the service awake. One always-on service fits within Render's 750 free hours a month.
 
-To turn it on: in GitHub, open **Settings > Secrets and variables > Actions > Variables > New repository variable**, with name `DEMO_API_URL` and the service URL as the value (no trailing slash). You can run it once by hand from the **Actions** tab to test it.
+**Primary: an external monitor.** GitHub does not guarantee when scheduled workflows run; on this repo the 10-minute schedule ran once in about 10 hours, so it cannot carry this alone. Use a free cron or uptime service instead, for example [cron-job.org](https://cron-job.org) or [UptimeRobot](https://uptimerobot.com):
+
+1. Create a free account.
+2. Add a job or monitor with:
+   - **URL:** `https://dietiary-api.onrender.com/actuator/health`
+   - **Method:** GET
+   - **Interval:** every 10 minutes (5 also works)
+3. Optional: turn on failure emails. You then also learn when the demo is down.
+
+The endpoint is public and returns only `{"status":"UP"}`, so the monitor needs no credentials.
+
+**Backup: the GitHub workflow.** [`Keep demo warm`](../.github/workflows/keep-demo-warm.yml) calls the same endpoint on a 10-minute schedule whenever GitHub runs it. It is active because the `DEMO_API_URL` repository variable is set (Settings > Secrets and variables > Actions > Variables). You can run it by hand from the Actions tab.
 
 ## Free plan limits
 
