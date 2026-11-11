@@ -1,0 +1,30 @@
+name: Keep demo warm
+
+# Render's free plan stops the service after 15 minutes without traffic, and starting a
+# Spring Boot app again on 0.1 CPU takes about 2-3 minutes. Calling the health endpoint
+# every 10 minutes keeps the public demo awake; one always-on service fits in Render's
+# 750 free instance hours a month.
+#
+# Off until the repository variable DEMO_API_URL is set (Settings > Secrets and variables >
+# Actions > Variables), e.g. https://dietiary-api.onrender.com
+#
+# GitHub pauses scheduled workflows in a public repo after 60 days without commits.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    if: vars.DEMO_API_URL != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Call the health endpoint
+        env:
+          DEMO_API_URL: ${{ vars.DEMO_API_URL }}
+        # A cold start can take a few minutes, so allow a long wait and a few retries
+        run: curl -fsS --retry 3 --retry-delay 15 --max-time 240 "${DEMO_API_URL%/}/actuator/health"

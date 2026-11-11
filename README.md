@@ -7,6 +7,19 @@ Dietary is a SaaS platform that digitizes the dietitian–client workflow. Dieti
 
 The current scope targets a single dietitian account with multiple clients. The backend architecture remains multi-tenant ready by scoping all client data under a dietitian context.
 
+## Live demo
+
+The API is deployed from `main` to a free Render instance (setup: [docs/DEPLOY.md](docs/DEPLOY.md)). The link and Swagger UI will be added here after the first deploy.
+
+Demo accounts (shared and public, so other visitors may change the data):
+
+| Role | Email | Password |
+|---|---|---|
+| Dietitian | `demo@dietiary.app` | `Dietiary-demo-2026` |
+| Client (mobile endpoints) | `elif.demo@dietiary.app` | `Dietiary-demo-2026` |
+
+The dietitian has three clients with weeks of measurements and goals, a meal plan with alternatives, and a template. Elif has an account and four weeks of meal and water tracking.
+
 ## Status
 
 Work in progress. The **backend API** is implemented and runnable. The **web panel** and **mobile app** have not been started yet. The [roadmap](docs/ROADMAP.md) lists what works, what is missing, and what comes next.
