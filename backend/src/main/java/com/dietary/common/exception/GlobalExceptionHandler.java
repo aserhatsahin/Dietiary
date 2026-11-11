@@ -215,6 +215,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex, HttpServletRequest request) {
+        // Spring MVC's own exceptions (unknown URL, wrong HTTP method, unsupported media type...)
+        // carry their status code; keep it instead of turning them into 500s.
+        if (ex instanceof org.springframework.web.ErrorResponse springError) {
+            HttpStatus status = HttpStatus.valueOf(springError.getStatusCode().value());
+            String detail = springError.getBody().getDetail();
+            return ResponseEntity.status(status).body(ErrorResponse.builder()
+                    .timestamp(Instant.now())
+                    .status(status.value())
+                    .error(status.getReasonPhrase())
+                    .message(detail != null ? detail : status.getReasonPhrase())
+                    .path(request.getRequestURI())
+                    .build());
+        }
+
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())

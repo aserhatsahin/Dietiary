@@ -1,0 +1,7 @@
+# Keep the Docker build context small and free of local artifacts
+build/
+bin/
+.gradle/
+*.md
+Dockerfile
+.dockerignore

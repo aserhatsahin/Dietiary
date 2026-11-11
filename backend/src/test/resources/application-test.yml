@@ -1,0 +1,5 @@
+# Test profile, activated by IntegrationTestBase. The database comes from Testcontainers.
+jwt:
+  secret: test-only-secret-not-for-production-0123456789
+  # Long enough that a slow CI machine cannot expire a token in the middle of a test
+  access-token-expiration-ms: 3600000

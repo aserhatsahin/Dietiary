@@ -22,7 +22,7 @@ The plan puts something people can try online first: a deployed API and web pane
 | mealplan | templates, get, create, update, activate, delete, client's plans and active plan | none |
 | tracking | client: daily plan, track meal, track water, own profile/measurements/goal/progress; dietitian: progress | none |
 
-Cross-cutting gaps: no Dockerfile, no production config from environment variables.
+Cross-cutting gaps: system foods are seeded only in the `dev` profile, so a fresh production database has no foods. The Phase 2 seed data should cover this.
 
 ## Phase 0: Build and docs hygiene
 
@@ -41,7 +41,8 @@ Cross-cutting gaps: no Dockerfile, no production config from environment variabl
 - [x] Client-facing endpoints under `/api/mobile`: me, my measurements, my goal, my progress
 - [x] Missing CRUD: measurement update/delete, meal plan delete, goal history, a client's plan list
 - [x] Measurement deltas compared against the previous measurement by date (they used the newest one)
-- [ ] Production config from environment variables, plus a Dockerfile
+- [x] Production config from environment variables, plus a Dockerfile and a CI job that runs the image
+- [x] Security: no default JWT secret (the repo is public), weak secrets are rejected at startup; unknown URLs return 404 instead of 500
 - [x] Upgrade Spring Boot 3.2 → 4.1 (3.x is out of support), Gradle 8.5 → 9.9
 
 ## Phase 2: Public demo API
