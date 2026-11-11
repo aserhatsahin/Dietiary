@@ -20,6 +20,33 @@
         ],
         "createdAt": "2026-11-11T12:41:33.211Z",
         "reason": "assistant decided: canon card deliberately shows the category default (Cal.com-style) the user saw before"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-11-11T13:05:11.841Z",
+        "reason": "assistant decided: spent decision-page sketch of an unchosen world; it shows that world's own typeface, not the DESIGN.md system"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-botanical.html"
+        ],
+        "createdAt": "2026-11-11T13:05:11.868Z",
+        "reason": "assistant decided: spent decision-page sketch of an unchosen world; it shows that world's own typeface, not the DESIGN.md system"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/canon.html"
+        ],
+        "createdAt": "2026-11-11T13:05:11.895Z",
+        "reason": "assistant decided: spent decision-page sketch of an unchosen world; it shows that world's own typeface, not the DESIGN.md system"
       }
     ]
   }
