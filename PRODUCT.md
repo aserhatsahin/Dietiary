@@ -38,7 +38,9 @@ Success means a working dietitian can run real consultations with it: prepare be
   - **tape measurements:** circumferences such as waist, neck, hip, and others the dietitian tracks
 - **Visit rhythm:** clients are typically measured weekly or every few weeks. Progress is judged over weeks, not days.
 - **Online clients** measure at home or at a partner location and report the values; the dietitian enters them.
-- **Plan building:** the dietitian assembles plans from a food library (system foods plus their own custom foods) and reuses templates across clients.
+- **Plan building:** the dietitian assembles plans from a food library (system foods plus their own custom foods) and reuses templates across clients. Plans are usually **built during the consultation, together with the client** ("do you like eggs for breakfast?"), often on a shared screen, so the plan must read for the client too.
+- **Three ways of writing amounts, all in use:** grams/ml (most precise), **household measures** the client understands (1 cup of milk, 2 tablespoons of yoghurt, 1 thin slice of bread), and the **exchange system** (food groups with exchange lists: "1 bread exchange, 2 milk exchanges").
+- **While building, the dietitian watches:** each alternative's calories and macros (are a meal's alternatives equivalent?), the day's total against the target for any combination of choices, the client's restrictions (intolerances, dislikes), and what the client actually chose from earlier plans.
 
 ## Capabilities and Constraints
 
@@ -53,6 +55,8 @@ Success means a working dietitian can run real consultations with it: prepare be
 
 **Required but not built yet:**
 - **Fuller body composition in the data model:** the backend has weight, body fat %, muscle mass, water %, bone mass, visceral fat, BMR and metabolic age. It does not have fat mass, water mass, edema/extracellular water ratio, or **circumference measurements** (waist, neck, hip and others). These must exist in the API before the panel can show them.
+- **Household measures and exchange groups for foods:** the food model has only a serving size and unit. Converting between grams, household measures and exchanges needs per-food data in the API.
+- **Client restrictions as structured data:** today only free-text health info exists. Warnings during plan building need tags such as lactose and gluten.
 - Scale PDF import (planned).
 - Invite delivery by email (today the invite token is shared by hand).
 
