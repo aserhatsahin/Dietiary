@@ -22,7 +22,7 @@ The plan puts something people can try online first: a deployed API and web pane
 | mealplan | templates, get, create, update, activate, delete, client's plans and active plan | none |
 | tracking | client: daily plan, track meal, track water, own profile/measurements/goal/progress; dietitian: progress | none |
 
-Cross-cutting gaps: system foods are seeded only in the `dev` profile, so a fresh production database has no foods. The Phase 2 seed data should cover this.
+Cross-cutting gaps: startup is slow on a 0.1 CPU instance (about 2 minutes even with CDS); Spring AOT could shorten it further.
 
 ## Phase 0: Build and docs hygiene
 
@@ -47,9 +47,12 @@ Cross-cutting gaps: system foods are seeded only in the `dev` profile, so a fres
 
 ## Phase 2: Public demo API
 
-- [ ] Deploy backend + PostgreSQL (Render, Fly.io or Railway)
-- [ ] Seeded demo dietitian account with sample clients and plans
-- [ ] Public Swagger UI link in the README
+- [x] Choose hosting: Render free web service + Neon free PostgreSQL (`render.yaml`, [docs/DEPLOY.md](DEPLOY.md))
+- [x] System foods seeded by a Flyway migration, so every environment has them
+- [x] Demo dietitian account with sample clients, plans and tracking (`APP_DEMO_ENABLED`)
+- [x] Fit the 512 MB / 0.1 CPU free instance: JVM flags, CDS archive, keep-warm workflow
+- [ ] Create the Neon project and the Render service (one-time, by the repo owner)
+- [ ] Public demo and Swagger UI links in the README; update the GitHub repo description
 
 ## Phase 3: Dietitian web panel (`web/`)
 

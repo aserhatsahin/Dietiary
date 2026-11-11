@@ -156,12 +156,17 @@ The base configuration (`application.yml`) is the production one. It reads every
 | `CORS_ALLOWED_ORIGINS` | no | `http://localhost:5173,http://localhost:3000` | Comma-separated origins of the web panel |
 | `PORT` | no | `8080` | HTTP port (many hosting platforms set this) |
 | `SPRINGDOC_API_DOCS_ENABLED`, `SPRINGDOC_SWAGGER_UI_ENABLED` | no | `true` | Set to `false` to hide the API docs |
+| `APP_DEMO_ENABLED` | no | `false` | `true` creates the demo dietitian, clients, plans and tracking on first start (public demo only) |
+| `APP_DEMO_PASSWORD` | no | `Dietiary-demo-2026` | Password of the demo accounts (published in the root README on purpose) |
+| `JAVA_TOOL_OPTIONS` | no | `-XX:MaxRAMPercentage=75` | JVM flags; `render.yaml` sets smaller values for a 512 MB instance |
 
 Health checks: `GET /actuator/health`, plus `/actuator/health/liveness` and `/actuator/health/readiness`. No other Actuator endpoints are exposed.
 
 ## Docker
 
-`backend/Dockerfile` is a multi-stage build. The final image has only a JRE and the app's layers, and it runs as a non-root user.
+`backend/Dockerfile` is a multi-stage build. The final image has only a JRE and the app's layers, and it runs as a non-root user. The image build also starts the app once to create a class-data-sharing (CDS) archive; real startups load classes from it. On 0.1 CPU this cut startup from about 183 s to 135 s.
+
+Deployment to Render and Neon is described in [docs/DEPLOY.md](../docs/DEPLOY.md).
 
 Run the image locally together with PostgreSQL, from the repository root:
 

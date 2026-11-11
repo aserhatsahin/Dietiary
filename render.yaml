@@ -1,0 +1,44 @@
+# Render Blueprint for the public demo: https://render.com/docs/blueprint-spec
+# The database is not defined here: it lives on Neon (free, does not expire).
+# See docs/DEPLOY.md for the one-time setup.
+
+services:
+  - type: web
+    name: dietiary-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free          # 0.1 CPU, 512 MB; sleeps after 15 minutes without traffic
+    region: frankfurt   # close to Turkey and to Neon's eu-central-1
+    healthCheckPath: /actuator/health
+    # Deploy only after GitHub Actions passes on main, and only when the backend changes
+    autoDeployTrigger: checksPass
+    buildFilter:
+      paths:
+        - backend/**
+        - render.yaml
+    envVars:
+      # Neon connection, entered once in the Render dashboard (never committed)
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      # Render generates a random 256-bit secret on first deploy
+      - key: JWT_SECRET
+        generateValue: true
+      # Populate the demo dietitian and clients on first start (see backend/README.md)
+      - key: APP_DEMO_ENABLED
+        value: "true"
+      # Update when the web panel is deployed (comma-separated)
+      - key: CORS_ALLOWED_ORIGINS
+        value: http://localhost:5173
+      # Fit 0.1 CPU / 512 MB: smaller heap share, serial GC, C1-only JIT (faster cold start),
+      # few threads and a small connection pool
+      - key: JAVA_TOOL_OPTIONS
+        value: -XX:MaxRAMPercentage=60 -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xss512k
+      - key: SERVER_TOMCAT_THREADS_MAX
+        value: "20"
+      - key: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+        value: "5"

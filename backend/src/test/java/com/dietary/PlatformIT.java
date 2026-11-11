@@ -21,6 +21,18 @@ class PlatformIT extends IntegrationTestBase {
     }
 
     @Test
+    void systemFoodsAreSeededByTheMigration() throws Exception {
+        String token = registerDietitian();
+        getAs("/api/foods/search?source=SYSTEM", token)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data", org.hamcrest.Matchers.hasSize(25)))
+                .andExpect(jsonPath("$.data[*].name", org.hamcrest.Matchers.hasItem("Chicken Breast (Grilled)")));
+        getAs("/api/foods/categories", token)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data", org.hamcrest.Matchers.hasItems("Protein", "Grains", "Fruits")));
+    }
+
+    @Test
     void otherActuatorEndpointsAreNotExposed() throws Exception {
         // Not exposed at all, so even an authenticated user would not find them
         getAs("/actuator/env", registerDietitian()).andExpect(status().isNotFound());
